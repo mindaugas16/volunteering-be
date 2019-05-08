@@ -1,0 +1,19 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "backend-tslint-rules"
+  ],
+  "jsRules": {},
+  "rules": {
+    "no-default-export": false,
+    "no-implicit-dependencies": false,
+    "no-default-import": false,
+    "no-null-keyword": false,
+    "array-type": [true, "array-simple"],
+    "ordered-imports": false,
+    "no-unnecessary-callback-wrapper": false,
+    "no-invalid-this": false,
+    "no-parameter-reassignment": false
+  },
+  "rulesDirectory": []
+}
