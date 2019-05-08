@@ -1,0 +1,29 @@
+{
+  "name": "volunteering-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "start": "ts-node src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://M-Morkunas@github.com/M-Morkunas/volunteering-be.git "
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/M-Morkunas/volunteering-be/issues"
+  },
+  "homepage": "https://github.com/M-Morkunas/volunteering-be#readme",
+  "dependencies": {
+    "@types/express": "^4.16.1",
+    "express": "^4.16.4",
+    "nodemon": "^1.19.0",
+    "typescript": "^3.4.5"
+  },
+  "devDependencies": {
+    "ts-node": "^8.1.0"
+  }
+}
