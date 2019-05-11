@@ -18,11 +18,11 @@ export const transformEvent = event =>
         ...event._doc,
         _id: event.id,
         date: transformDateRange(event.date),
-        creator: user.bind(this, event.creator),
         activities: activities.bind(this, event.activities),
         organization: organization.bind(this, event.organization),
         createdAt: dateToString(event._doc.createdAt),
-        updatedAt: dateToString(event._doc.updatedAt)
+        updatedAt: dateToString(event._doc.updatedAt),
+        imagePath: event.imagePath
     });
 
 export const transformUser = user =>

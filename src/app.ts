@@ -18,11 +18,11 @@ require('dotenv')
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'images');
+        cb(null, './assets/images');
     },
     filename: (req, file, cb) => {
         cb(null, Date.now()
-            .toString());
+            .toString() + path.extname(file.originalname));
     }
 });
 
@@ -52,7 +52,8 @@ app.use(
     multer({storage: fileStorage, fileFilter})
         .single('image')
 );
-app.use('/images', express.static(path.join(__dirname, 'images')));
+
+app.use('/assets/images', express.static(path.join(__dirname, '/assets/images')));
 
 app.use(isAuth);
 app.use(cors);

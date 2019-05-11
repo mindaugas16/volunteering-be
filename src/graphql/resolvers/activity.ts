@@ -62,8 +62,8 @@ export default {
             const result = await activity.save();
             createdActivity = transformActivity(result);
 
-            user.createdActivities.push(createdActivity);
-            await user.save();
+            // user.createdActivities.push(createdActivity);
+            // await user.save();
 
             fetchedEvent.activities.push(createdActivity);
             await fetchedEvent.save();

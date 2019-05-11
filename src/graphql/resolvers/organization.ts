@@ -93,8 +93,8 @@ export default {
             organization.members.push(user._id);
             await organization.save();
 
-            user.organizations.push(args.organizationId);
-            await user.save();
+            // user.organizations.push(args.organizationId);
+            // await user.save();
 
             return true;
         } catch (err) {
@@ -124,9 +124,9 @@ export default {
             //     throw new Error('You can\'t leave your own organization');
             // }
 
-            if (user.organizations.indexOf(organization._id) === -1 || organization.members.indexOf(user._id) === -1) {
-                throw new Error('You already left this organization');
-            }
+            // if (user.organizations.indexOf(organization._id) === -1 || organization.members.indexOf(user._id) === -1) {
+            //     throw new Error('You already left this organization');
+            // }
 
             // organization.members.pull(user._id);
             // await organization.save();

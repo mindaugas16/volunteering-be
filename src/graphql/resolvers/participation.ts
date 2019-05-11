@@ -34,8 +34,8 @@ export default {
             if (!user) {
                 throw new Error('User not found.');
             }
-            user.participations.push(result);
-            await user.save();
+            // user.participations.push(result);
+            // await user.save();
 
             if (!fetchedActivity) {
                 throw new Error('Activity not found.');

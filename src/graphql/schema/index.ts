@@ -14,11 +14,7 @@ export default buildSchema(`
             lastName: String!
             postalCode: String!
             contacts: String
-            bio: String
             password: String
-            organizations: [Organization]
-            createdEvents: [Event]
-            createdActivities: [Activity]
             role: String
         }
 
@@ -31,8 +27,6 @@ export default buildSchema(`
             name: String!
             description: String
             location: Location
-            createdAt: String!
-            updatedAt: String!
             events: [Event!]
         }
 
@@ -66,13 +60,12 @@ export default buildSchema(`
         type Event {
             _id: ID!
             title: String!
-            description: String!
+            description: String
             date: DateRange!
-            creator: User!
+            organization: Organization!
             activities: [Activity!]
             location: Location
             tags: [Tag]
-            organization: Organization!
             imagePath: String
             createdAt: String!
             updatedAt: String!
@@ -123,7 +116,7 @@ export default buildSchema(`
 
         input EventInput {
             title: String!
-            description: String!
+            description: String
             date: DateRangeInput!
             location: LocationInput
             imagePath: String

@@ -1,19 +1,14 @@
 import { Document, model, Schema } from 'mongoose';
 
 export interface UserInterface extends Document {
-    _id: any;
     _doc: any;
+    _id: any;
     email: string;
     password: string;
     firstName: string;
     lastName: string;
-    createdActivities: any[];
     activities: any[];
     postalCode: string;
-    bio: string;
-    organizations: any[];
-    createdEvents: any[];
-    participations: any[];
 }
 
 const userSchema = new Schema({
@@ -41,31 +36,10 @@ const userSchema = new Schema({
     contacts: {
         type: String
     },
-    bio: {
-        type: String
-    },
     role: {
         type: String,
         required: true
-    },
-    createdEvents: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Event'
-        }
-    ],
-    createdActivities: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Activity'
-        }
-    ],
-    organizations: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Organization'
-        }
-    ]
+    }
 });
 
 export default model<UserInterface>('User', userSchema);

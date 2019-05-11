@@ -26,16 +26,12 @@ export default {
     },
     createEvent: async ({eventInput}, req) => {
         if (!req.isAuth) {
-            throw new Error('Unauthenticated!');
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
         }
         try {
-            const user = await User.findById(req.userId);
-            if (!user) {
-                throw new Error('User not found.');
-            }
-
-            const organization = await Organization.findById(eventInput.organizationId);
-
+            const organization = await Organization.findById(req.userId);
             if (!organization) {
                 throw new Error('Organization not found.');
             }
@@ -45,14 +41,10 @@ export default {
                 description: eventInput.description,
                 date: transformDateRange(eventInput.date),
                 location: eventInput.location,
-                creator: req.userId,
                 organization: organization._id,
                 imagePath: eventInput.imagePath
             });
             const result = await event.save();
-
-            user.createdEvents.push(event);
-            await user.save();
 
             organization.events.push(event);
             await organization.save();
@@ -81,9 +73,9 @@ export default {
                 throw new Error('Event not found');
             }
 
-            if (!event.creator._id.equals(user._id)) {
-                throw new Error('You can\'t update event details');
-            }
+            // if (!event.creator._id.equals(user._id)) {
+            //     throw new Error('You can\'t update event details');
+            // }
 
             event.title = eventInput.name;
             event.description = eventInput.description;
@@ -116,9 +108,9 @@ export default {
                 throw new Error('Event not found');
             }
 
-            if (!event.creator._id.equals(user._id)) {
-                throw new Error('You can\'t add tags');
-            }
+            // if (!event.creator._id.equals(user._id)) {
+            //     throw new Error('You can\'t add tags');
+            // }
 
             const newTag = new Tag({label: tagLabel});
             event.tags.push(newTag);
@@ -148,9 +140,9 @@ export default {
                 throw new Error('Event not found');
             }
 
-            if (!event.creator._id.equals(user._id)) {
-                throw new Error('You can\'t update tag');
-            }
+            // if (!event.creator._id.equals(user._id)) {
+            //     throw new Error('You can\'t update tag');
+            // }
             const foundTagIndex = event.tags.findIndex(({_id}) => _id.equals(tag._id));
             if (foundTagIndex < 0) {
                 throw new Error('Tag not found');
@@ -184,9 +176,9 @@ export default {
                 throw new Error('Event not found');
             }
 
-            if (!event.creator._id.equals(user._id)) {
-                throw new Error('You can\'t delete tag');
-            }
+            // if (!event.creator._id.equals(user._id)) {
+            //     throw new Error('You can\'t delete tag');
+            // }
             const foundTagIndex = event.tags.findIndex(tag => tag._id.equals(tagId));
             if (foundTagIndex < 0) {
                 throw new Error('Tag not found');
