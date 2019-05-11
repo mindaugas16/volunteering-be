@@ -18,7 +18,7 @@ require('dotenv')
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './assets/images');
+        cb(null, './src/assets/images');
     },
     filename: (req, file, cb) => {
         cb(null, Date.now()
@@ -75,7 +75,7 @@ app.post('/upload', (req, res, next) => {
     }
 
     return res.status(200)
-        .json({message: 'File stored', filePath: req.file.path});
+        .json({message: 'File stored', fileName: req.file.filename});
 });
 
 app.use('/graphql', graphqlHttp({

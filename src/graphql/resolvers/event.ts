@@ -62,29 +62,19 @@ export default {
         }
 
         try {
-            const user = await User.findById(req.userId);
-            if (!user) {
-                throw new Error('User not found.');
+            const organization = await Organization.findById(req.userId);
+            if (!organization) {
+                throw new Error('Organization not found.');
             }
 
-            const event = await Event.findById(id);
+            return Event.findOneAndUpdate({_id: id}, {...eventInput}, {new: true},
+                (err, doc) => {
+                    if (err) {
+                        throw new Error(err);
+                    }
 
-            if (!event) {
-                throw new Error('Event not found');
-            }
-
-            // if (!event.creator._id.equals(user._id)) {
-            //     throw new Error('You can\'t update event details');
-            // }
-
-            event.title = eventInput.name;
-            event.description = eventInput.description;
-            event.date = eventInput.date;
-            event.location = {...eventInput.location};
-
-            const updatedEvent = await event.save();
-
-            return transformEvent(updatedEvent);
+                    return transformEvent(doc);
+                });
         } catch (err) {
             throw err;
         }

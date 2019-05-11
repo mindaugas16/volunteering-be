@@ -28,7 +28,7 @@ export const eventTypeDefs =
         }
 
         extend type Mutation {
-            createEvent(eventInput: EventInput): Event
+            createEvent(eventInput: EventInput!): Event!
             updateEvent(id: ID!, eventInput: EventInput!): Event!
             addEventTag(id: ID!, tagLabel: String!): String!
         }
