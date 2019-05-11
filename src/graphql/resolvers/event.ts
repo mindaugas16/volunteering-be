@@ -10,7 +10,7 @@ export default {
             const events = await Event.find({title: {$regex: query, $options: 'i'}})
                 .sort(orderBy);
 
-            return events.map(transformEvent);
+            return events.map(event => transformEvent(event));
         } catch (err) {
             throw err;
         }

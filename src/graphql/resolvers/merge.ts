@@ -5,17 +5,13 @@ import Organization from '../../models/organization';
 import DataLoader from 'dataloader';
 import { dateToString } from '../../helpers/date';
 
-const eventLoader = new DataLoader(eventIds =>
-    events(eventIds));
+const eventLoader = new DataLoader(eventIds => events(eventIds));
 
-const activityLoader = new DataLoader(activityIds =>
-    activities(activityIds));
+const activityLoader = new DataLoader(activityIds => activities(activityIds));
 
-const userLoader = new DataLoader(userIds =>
-    users(userIds));
+const userLoader = new DataLoader(userIds => users(userIds));
 
-const organizationLoader = new DataLoader(ids =>
-    organizations(ids));
+const organizationLoader = new DataLoader(ids => organizations(ids));
 
 export const transformEvent = event =>
     ({

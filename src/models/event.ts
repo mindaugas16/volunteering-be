@@ -1,4 +1,5 @@
 import { Document, model, Schema } from 'mongoose';
+import { TagInterface } from '../../../volunteering-fe/src/app/ui-elements/tag/tag.interface';
 
 export interface EventInterface extends Document {
     title: string;

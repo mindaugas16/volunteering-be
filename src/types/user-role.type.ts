@@ -1,2 +1,1 @@
-export type UserRoleType = 'GENERAL' | 'VOLUNTEER' | 'ORGANIZATION' | 'SPONSOR'
-
+export type UserRoleType = 'GENERAL' | 'VOLUNTEER' | 'ORGANIZATION' | 'SPONSOR';
