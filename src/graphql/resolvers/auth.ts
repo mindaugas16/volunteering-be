@@ -1,17 +1,29 @@
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { isEmail } from 'validator';
-import User from '../../models/user';
-import Volunteer from '../../models/volunteer';
+import User from '../../models/users/user';
+import Volunteer from '../../models/users/volunteer';
+import Organization from '../../models/users/organization';
+import Sponsor from '../../models/users/sponsor';
 import { transformUser } from './merge';
-import { Model } from 'mongoose';
 
 export default {
     createUser: async ({userInput, userRole}) => {
         try {
-            let type: Model<any> = User;
-            if (userRole === 'VOLUNTEER') {
-                type = Volunteer;
+            let type = null;
+            const role: string = userRole;
+            switch (userRole) {
+                case 'VOLUNTEER':
+                    type = Volunteer;
+                    break;
+                case 'ORGANIZATION':
+                    type = Organization;
+                    break;
+                case 'SPONSOR':
+                    type = Sponsor;
+                    break;
+                default:
+                    type = User;
             }
             const user = await type.findOne({email: userInput.email});
 
@@ -40,13 +52,13 @@ export default {
                 throw error;
             }
 
-            const hashedPassword = await bcrypt.hash(userInput.password, 12);
+            const {password, ...rest} = userInput;
+
+            const hashedPassword = await bcrypt.hash(password, 12);
             const createdUser = new type({
-                email: userInput.email,
-                firstName: userInput.firstName,
-                lastName: userInput.lastName,
-                postalCode: userInput.postalCode,
-                password: hashedPassword
+                ...rest,
+                password: hashedPassword,
+                role
             });
 
             const result = await createdUser.save();

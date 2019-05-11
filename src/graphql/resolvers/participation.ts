@@ -1,5 +1,5 @@
 import Participation from '../../models/participation';
-import User from '../../models/user';
+import User from '../../models/users/user';
 import Activity from '../../models/activity';
 import { transformParticipation } from './merge';
 

@@ -1,5 +1,5 @@
-import User from '../../models/user';
-import Organization from '../../models/organization';
+import User from '../../models/users/user';
+import Organization from '../../models/users/organization';
 import { transformOrganization } from './merge';
 import bcrypt from 'bcryptjs';
 import isEmail from 'validator/lib/isEmail';

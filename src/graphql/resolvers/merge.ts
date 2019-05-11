@@ -1,7 +1,7 @@
-import User from '../../models/user';
+import User from '../../models/users/user';
 import Event from '../../models/event';
 import Activity from '../../models/activity';
-import Organization from '../../models/organization';
+import Organization from '../../models/users/organization';
 import DataLoader from 'dataloader';
 import { dateToString } from '../../helpers/date';
 

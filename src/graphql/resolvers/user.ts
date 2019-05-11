@@ -1,5 +1,5 @@
 import isNumeric from 'validator/lib/isNumeric';
-import User from '../../models/user';
+import User from '../../models/users/user';
 import { transformUser } from './merge';
 
 export default {

@@ -19,7 +19,7 @@ export default buildSchema(`
             organizations: [Organization]
             createdEvents: [Event]
             createdActivities: [Activity]
-            role: Int
+            role: String
         }
 
         type Organization {
@@ -126,9 +126,7 @@ export default buildSchema(`
             description: String!
             date: DateRangeInput!
             location: LocationInput
-            organizationId: ID
             imagePath: String
-            tags: [TagInput]
         }
 
         input UserInput {
@@ -138,6 +136,8 @@ export default buildSchema(`
             lastName: String!
             postalCode: String!
             termsAndConditions: Boolean!
+
+            name: String
         }
 
         input UserUpdateInput {

@@ -1,7 +1,7 @@
 import Event from '../../models/event';
-import User from '../../models/user';
+import User from '../../models/users/user';
 import Tag from '../../models/tag';
-import Organization from '../../models/organization';
+import Organization from '../../models/users/organization';
 import { transformDateRange, transformEvent } from './merge';
 
 export default {

@@ -1,7 +1,7 @@
 import { compareDates, toDate } from '../../helpers/date';
 import Activity from '../../models/activity';
 import Event from '../../models/event';
-import User from '../../models/user';
+import User from '../../models/users/user';
 import { transformActivity, transformDateRange } from './merge';
 
 export default {

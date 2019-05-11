@@ -19,7 +19,8 @@ export interface UserInterface extends Document {
 const userSchema = new Schema({
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -44,7 +45,8 @@ const userSchema = new Schema({
         type: String
     },
     role: {
-        type: String
+        type: String,
+        required: true
     },
     createdEvents: [
         {
