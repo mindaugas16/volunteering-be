@@ -1,5 +1,6 @@
 import { Document, model, Schema } from 'mongoose';
 import { OrganizationInterface } from './users/organization';
+import { EventStatus } from 'types/event-status.enum';
 
 export interface EventInterface extends Document {
     title: string;
@@ -13,6 +14,11 @@ export interface EventInterface extends Document {
 }
 
 const eventSchema = new Schema({
+    status: {
+        type: String,
+        required: true,
+        default: EventStatus.DRAFT
+    },
     title: {
         type: String,
         required: true,
