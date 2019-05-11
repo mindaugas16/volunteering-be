@@ -40,8 +40,8 @@ export default {
             if (!fetchedActivity) {
                 throw new Error('Activity not found.');
             }
-            fetchedActivity.participations.push(result);
-            await fetchedActivity.save();
+            // fetchedActivity.participations.push(result);
+            // await fetchedActivity.save();
 
             return result;
         } catch (err) {

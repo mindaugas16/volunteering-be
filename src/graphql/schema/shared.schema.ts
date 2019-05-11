@@ -44,19 +44,7 @@ export const sharedTypeDefs = `
 ;
 
 // export default buildSchema(`
-//         type Activity {
-//             _id: ID!
-//             name: String!
-//             description: String
-//             date: DateRange!
-//             creator: User!
-//             createdAt: String!
-//             updatedAt: String!
-//             event: Event!
-//             volunteers: [ID!]
-//             volunteersNeeded: Int!
-//         }
-
+//
 //         type Participation {
 //             volunteer: User!
 //             activity: Activity!
@@ -65,13 +53,7 @@ export const sharedTypeDefs = `
 //             updatedAt: String!
 //         }
 //
-//         input ActivityInput {
-//             name: String!
-//             description: String
-//             date: DateRangeInput!
-//             eventId: ID!
-//             volunteersNeeded: Int!
-//         }
+//
 //
 
 //
@@ -90,8 +72,6 @@ export const sharedTypeDefs = `
 //         }
 //
 //         type RootQuery {
-//             activity(activityId: ID!): Activity!
-//             activities: [Activity!]!
 //             participations: [Participation!]!
 //         }
 //
@@ -101,7 +81,7 @@ export const sharedTypeDefs = `
 //             deleteEventTag(id: ID!, tagId: ID!): Tag!
 //
 //
-//             createActivity(activityInput: ActivityInput): Activity
+//
 //             participate(participationInput: ParticipationInput): Participation
 //
 //         }

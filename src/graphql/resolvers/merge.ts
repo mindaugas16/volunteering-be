@@ -3,7 +3,7 @@ import Event from '../../models/event';
 import Activity from '../../models/activity';
 import Organization from '../../models/users/organization';
 import DataLoader from 'dataloader';
-import { dateToString } from '../../helpers/date';
+import { dateToString } from 'helpers/date';
 
 const eventLoader = new DataLoader(eventIds => events(eventIds));
 
@@ -61,7 +61,7 @@ export const transformActivity = activity =>
         ...activity._doc,
         _id: activity.id,
         date: transformDateRange(activity._doc.date),
-        creator: user.bind(this, activity._doc.creator),
+        volunteers: users.bind(this, activity.volunteers),
         event: singleEvent.bind(this, activity._doc.event),
         createdAt: dateToString(activity._doc.createdAt),
         updatedAt: dateToString(activity._doc.updatedAt)

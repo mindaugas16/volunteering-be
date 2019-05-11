@@ -12,6 +12,7 @@ export const eventTypeDefs =
             organization: Organization!
             location: Location
             tags: [Tag]
+            activities: [Activity!]!
         }
 
         input EventInput {

@@ -1,6 +1,7 @@
 import { Document, model, Schema } from 'mongoose';
 import { OrganizationInterface } from './users/organization';
 import { EventStatus } from 'types/event-status.enum';
+import { ActivityInterface } from 'models/activity';
 
 export interface EventInterface extends Document {
     title: string;
@@ -8,7 +9,7 @@ export interface EventInterface extends Document {
     date: any;
     location: any;
     organization: OrganizationInterface;
-    activities: any[];
+    activities: ActivityInterface[];
     tags: any[];
     imagePath: string;
 }
