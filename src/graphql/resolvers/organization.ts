@@ -5,48 +5,48 @@ import bcrypt from 'bcryptjs';
 import isEmail from 'validator/lib/isEmail';
 
 export default {
-    registerOrganization: async ({organizationInput, userInput}) => {
-        try {
-            const user = await Organization.findOne({email: userInput.email});
-
-            if (user) {
-                throw new Error('User already exist!');
-            }
-
-            const errors = [];
-
-            if (!isEmail(userInput.email)) {
-                errors.push({
-                    email: 'invalidEmail'
-                });
-            }
-
-            if (errors.length) {
-                const error = new Error('Invalid input') as any;
-                error.data = errors;
-                error.code = 400;
-                throw error;
-            }
-
-            const hashedPassword = await bcrypt.hash(userInput.password, 12);
-
-            const organization = new Organization({
-                email: userInput.email,
-                firstName: userInput.firstName,
-                lastName: userInput.lastName,
-                postalCode: userInput.postalCode,
-                password: hashedPassword,
-                name: organizationInput.name,
-                description: organizationInput.description,
-                location: organizationInput.location
-            });
-            const result = await organization.save();
-
-            return transformOrganization(result);
-        } catch (err) {
-            throw err;
-        }
-    },
+    // registerOrganization: async ({organizationInput, userInput}) => {
+    //     try {
+    //         const user = await Organization.findOne({email: userInput.email});
+    //
+    //         if (user) {
+    //             throw new Error('User already exist!');
+    //         }
+    //
+    //         const errors = [];
+    //
+    //         if (!isEmail(userInput.email)) {
+    //             errors.push({
+    //                 email: 'invalidEmail'
+    //             });
+    //         }
+    //
+    //         if (errors.length) {
+    //             const error = new Error('Invalid input') as any;
+    //             error.data = errors;
+    //             error.code = 400;
+    //             throw error;
+    //         }
+    //
+    //         const hashedPassword = await bcrypt.hash(userInput.password, 12);
+    //
+    //         const organization = new Organization({
+    //             email: userInput.email,
+    //             firstName: userInput.firstName,
+    //             lastName: userInput.lastName,
+    //             postalCode: userInput.postalCode,
+    //             password: hashedPassword,
+    //             name: organizationInput.name,
+    //             description: organizationInput.description,
+    //             location: organizationInput.location
+    //         });
+    //         const result = await organization.save();
+    //
+    //         return transformOrganization(result);
+    //     } catch (err) {
+    //         throw err;
+    //     }
+    // },
     organizations: async () => {
         try {
             const organization = await Organization.find();
@@ -139,7 +139,7 @@ export default {
             throw err;
         }
     },
-    updateOrganization: async ({id, organizationInput}, req) => {
+    updateOrganization: async ({organizationInput}, req) => {
         if (!req.isAuth) {
             const error = new Error('Unauthenticated') as any;
             error.code = 401;
@@ -147,12 +147,7 @@ export default {
         }
 
         try {
-            const user = await User.findById(req.userId);
-            if (!user) {
-                throw new Error('User not found.');
-            }
-
-            const organization = await Organization.findById(id);
+            const organization = await Organization.findById(req.userId);
 
             if (!organization) {
                 throw new Error('Organization not found');
@@ -164,7 +159,7 @@ export default {
 
             organization.name = organizationInput.name;
             organization.description = organizationInput.description;
-            organization.location = {...organizationInput.location};
+            organization.location = organizationInput.location;
 
             const updatedOrganization = await organization.save();
 

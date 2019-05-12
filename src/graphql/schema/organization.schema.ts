@@ -28,7 +28,7 @@ export const organizationTypeDefs =
         extend type Mutation {
             joinOrganization(organizationId: ID): Boolean
             leaveOrganization(organizationId: ID): Boolean
-            updateOrganization(id: ID!, organizationInput: OrganizationInput!): Organization!
+            updateOrganization(organizationInput: OrganizationInput!): Organization!
         }
     `
 ;
