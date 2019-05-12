@@ -29,5 +29,6 @@ export const activityTypeDefs =
         extend type Mutation {
             createActivity(activityInput: ActivityInput!): Activity!
             updateActivity(id: ID!, activityInput: ActivityInput!): Activity!
+            deleteActivity(id: ID!): Boolean
         }
     `;

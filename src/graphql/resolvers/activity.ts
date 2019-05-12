@@ -106,5 +106,29 @@ export default {
         } catch (err) {
             throw err;
         }
+    },
+    deleteActivity: async ({id}, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
+        }
+
+        try {
+            const activity = await Activity.findById(id);
+
+            // if (activity.event.organization._id.equals(req.id)) {
+            //     throw new Error('You can not delete activity');
+            // }
+
+            await Activity.findByIdAndRemove(id);
+            const event = await Event.findById(activity.event);
+            (event.activities as any).pull(id);
+            await event.save();
+
+            return true;
+        } catch (err) {
+            throw err;
+        }
     }
 };
