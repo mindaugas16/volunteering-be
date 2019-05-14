@@ -9,7 +9,7 @@ import graphqlResolvers from './graphql/resolvers';
 import mongoose from 'mongoose';
 import multer from 'multer';
 import * as path from 'path';
-import * as fs from 'fs';
+import { clearImage } from 'helpers/file';
 
 const app = express();
 // tslint:disable-next-line:no-require-imports
@@ -36,14 +36,6 @@ const fileFilter = (req, file, cb) => {
     } else {
         cb(null, false);
     }
-};
-
-const clearImage = filePath => {
-    filePath = path.join(__dirname, '..', filePath);
-    fs.unlink(filePath, error => {
-        // tslint:disable-next-line:no-console
-        console.log(error);
-    });
 };
 
 app.use(bodyParser.json());

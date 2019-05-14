@@ -12,13 +12,13 @@ export interface EventInterface extends Document {
     activities: ActivityInterface[];
     tags: any[];
     imagePath: string;
+    status: EventStatus;
 }
 
 const eventSchema = new Schema({
     status: {
-        type: String,
-        required: true,
-        default: EventStatus.DRAFT
+        type: Number,
+        required: true
     },
     title: {
         type: String,

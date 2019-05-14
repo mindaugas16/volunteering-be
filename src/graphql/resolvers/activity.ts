@@ -95,13 +95,14 @@ export default {
 
             const {eventId, ...rest} = activityInput;
 
-            return Activity.findOneAndUpdate({_id: id}, rest, {new: true}, (err, doc) => {
-                if (err) {
-                    throw new Error(err);
-                }
-
-                return transformActivity(doc);
-            });
+            // return Activity.findOneAndUpdate({_id: id}, rest, {new: true}, (err, doc) => {
+            //     if (err) {
+            //         throw new Error(err);
+            //     }
+            //
+            //     return transformActivity(doc);
+            // });
+            return null;
 
         } catch (err) {
             throw err;

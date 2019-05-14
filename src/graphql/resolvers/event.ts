@@ -3,12 +3,25 @@ import User from '../../models/users/user';
 import Tag from '../../models/tag';
 import Organization from '../../models/users/organization';
 import { transformDateRange, transformEvent } from './merge';
+import { clearImage } from 'helpers/file';
 
 export default {
-    events: async ({query, orderBy}) => {
+    events: async ({query, orderBy, statuses}) => {
         try {
-            const events = await Event.find({title: {$regex: query, $options: 'i'}})
-                .sort(orderBy);
+            let condition = null;
+            if (query) {
+                condition = {title: {$regex: query, $options: 'i'}};
+            }
+
+            if (statuses && statuses.length) {
+                condition = {...condition, status: {$in: statuses}};
+            }
+
+            let events = await Event.find(condition);
+
+            if (orderBy) {
+                events = events.sort(orderBy);
+            }
 
             return events.map(event => transformEvent(event));
         } catch (err) {
@@ -67,14 +80,36 @@ export default {
                 throw new Error('Organization not found.');
             }
 
-            return Event.findOneAndUpdate({_id: id}, {...eventInput}, {new: true},
-                (err, doc) => {
-                    if (err) {
-                        throw new Error(err);
-                    }
+            const event = await Event.findById(id);
 
-                    return transformEvent(doc);
-                });
+            const imagePath = event.imagePath;
+
+            if (eventInput.imagePath) {
+                if (eventInput.imagePath !== 'remove') {
+                    event.imagePath = eventInput.imagePath;
+                } else if (imagePath) {
+                    clearImage(imagePath);
+                    event.imagePath = null;
+                }
+            }
+
+            if (!organization._id.equals(event.organization._id)) {
+                throw new Error('You can not update this event');
+            }
+
+            if (!event.status) {
+                throw new Error('Event status is required');
+            }
+
+            event.title = eventInput.title;
+            event.description = eventInput.description;
+            event.date = eventInput.date;
+            event.location = eventInput.location;
+            event.status = eventInput.status;
+
+            const savedEvent = await event.save();
+
+            return transformEvent(savedEvent);
         } catch (err) {
             throw err;
         }

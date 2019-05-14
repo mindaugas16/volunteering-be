@@ -1,5 +1,11 @@
 export const eventTypeDefs =
 `
+        enum EventStatus {
+          DRAFT
+          PUBLIC
+          PRIVATE
+        }
+
         type Event {
             _id: ID!
             title: String!
@@ -7,6 +13,7 @@ export const eventTypeDefs =
             imagePath: String
             createdAt: String!
             updatedAt: String!
+            status: Int!
 
             date: DateRange!
             organization: Organization!
@@ -21,11 +28,12 @@ export const eventTypeDefs =
             imagePath: String
             date: DateRangeInput!
             location: LocationInput
+            status: Int!
         }
 
         extend type Query {
             event(eventId: ID!): Event!
-            events(query: String, orderBy: String): [Event!]!
+            events(query: String, orderBy: String, statuses: [Int]): [Event!]!
         }
 
         extend type Mutation {
