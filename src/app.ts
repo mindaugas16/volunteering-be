@@ -73,7 +73,7 @@ app.post('/upload', (req, res, next) => {
 app.use('/graphql', graphqlHttp({
     schema: graphqlSchema,
     rootValue: graphqlResolvers,
-    graphiql: true,
+    graphiql: process.env.NODE_ENV !== 'production',
     customFormatErrorFn(error: any): any {
         if (!error.originalError) {
             return error;
