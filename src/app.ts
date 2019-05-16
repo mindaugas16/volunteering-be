@@ -91,7 +91,7 @@ mongoose.connect(
     // tslint:disable-next-line:max-line-length
     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-eoch3.mongodb.net/${process.env.MONGO_DB}?retryWrites=true`)
     .then(() => {
-        const server = app.listen(3000, () => {
+        const server = app.listen(process.env.PORT || 3000, () => {
             // tslint:disable-next-line:no-console
             console.log('Server is running on port', (server.address() as any).port);
         });
