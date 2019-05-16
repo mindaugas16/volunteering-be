@@ -22,7 +22,7 @@ export const organizationTypeDefs =
 
         extend type Query {
             organization(organizationId: ID!): Organization!
-            organizations: [Organization!]!
+            organizations(query: String, location: String): [Organization!]!
         }
 
         extend type Mutation {

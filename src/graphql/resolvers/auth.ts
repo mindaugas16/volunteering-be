@@ -145,7 +145,9 @@ export default {
     },
     currentUser: async (args, req) => {
         if (!req.isAuth) {
-            return null;
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
         }
 
         try {
