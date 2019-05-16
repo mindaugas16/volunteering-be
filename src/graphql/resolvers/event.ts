@@ -6,7 +6,7 @@ import { transformDateRange, transformEvent } from './merge';
 import { clearImage } from 'helpers/file';
 
 export default {
-    events: async ({query, orderBy, statuses}) => {
+    events: async ({query, location, orderBy, statuses, tags}) => {
         try {
             let condition = null;
             if (query) {
@@ -15,6 +15,23 @@ export default {
 
             if (statuses && statuses.length) {
                 condition = {...condition, status: {$in: statuses}};
+            }
+
+            if (location) {
+                condition = {
+                    ...condition, $or: [
+                        {'location.address': {$regex: location, $options: 'i'}},
+                        {'location.city': {$regex: location, $options: 'i'}},
+                        {'location.country': {$regex: location, $options: 'i'}}
+                    ]
+                };
+            }
+
+            if (tags && tags.length) {
+                condition = {
+                    ...condition,
+                    'tags.label': {$in: tags}
+                };
             }
 
             let events = await Event.find(condition);
@@ -122,9 +139,9 @@ export default {
         }
 
         try {
-            const user = await User.findById(req.userId);
+            const user = await Organization.findById(req.userId);
             if (!user) {
-                throw new Error('User not found.');
+                throw new Error('Organization not found.');
             }
 
             const event = await Event.findById(id);
@@ -214,7 +231,7 @@ export default {
             event.markModified('tags');
             await event.save();
 
-            return tempTag;
+            return true;
         } catch (err) {
             throw err;
         }

@@ -1,55 +1,25 @@
 import User from '../../models/users/user';
 import Organization from '../../models/users/organization';
 import { transformOrganization } from './merge';
-import bcrypt from 'bcryptjs';
-import isEmail from 'validator/lib/isEmail';
 
 export default {
-    // registerOrganization: async ({organizationInput, userInput}) => {
-    //     try {
-    //         const user = await Organization.findOne({email: userInput.email});
-    //
-    //         if (user) {
-    //             throw new Error('User already exist!');
-    //         }
-    //
-    //         const errors = [];
-    //
-    //         if (!isEmail(userInput.email)) {
-    //             errors.push({
-    //                 email: 'invalidEmail'
-    //             });
-    //         }
-    //
-    //         if (errors.length) {
-    //             const error = new Error('Invalid input') as any;
-    //             error.data = errors;
-    //             error.code = 400;
-    //             throw error;
-    //         }
-    //
-    //         const hashedPassword = await bcrypt.hash(userInput.password, 12);
-    //
-    //         const organization = new Organization({
-    //             email: userInput.email,
-    //             firstName: userInput.firstName,
-    //             lastName: userInput.lastName,
-    //             postalCode: userInput.postalCode,
-    //             password: hashedPassword,
-    //             name: organizationInput.name,
-    //             description: organizationInput.description,
-    //             location: organizationInput.location
-    //         });
-    //         const result = await organization.save();
-    //
-    //         return transformOrganization(result);
-    //     } catch (err) {
-    //         throw err;
-    //     }
-    // },
-    organizations: async () => {
+    organizations: async ({query, location}) => {
         try {
-            const organization = await Organization.find();
+            let condition = null;
+            if (query) {
+                condition = {name: {$regex: query, $options: 'i'}};
+            }
+
+            if (location) {
+                condition = {
+                    ...condition, $or: [
+                        {'location.address': {$regex: location, $options: 'i'}},
+                        {'location.city': {$regex: location, $options: 'i'}},
+                        {'location.country': {$regex: location, $options: 'i'}}
+                    ]
+                };
+            }
+            const organization = await Organization.find(condition);
 
             return organization.map(event =>
                 transformOrganization(event));
