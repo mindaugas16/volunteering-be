@@ -24,7 +24,7 @@ const organizationSchema = new Schema({
     members: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'Volunteer'
         }
     ],
     events: [
