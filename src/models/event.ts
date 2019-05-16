@@ -1,27 +1,32 @@
 import { Document, model, Schema } from 'mongoose';
+import { OrganizationInterface } from './users/organization';
+import { EventStatus } from 'types/event-status.enum';
+import { ActivityInterface } from 'models/activity';
 
 export interface EventInterface extends Document {
     title: string;
     description: string;
     date: any;
     location: any;
-    organization: any;
-    creator: any;
-    activities: any[];
+    organization: OrganizationInterface;
+    activities: ActivityInterface[];
     tags: any[];
-    sponsors: any[];
-    categories: any[];
     imagePath: string;
+    status: EventStatus;
 }
 
 const eventSchema = new Schema({
-    title: {
-        type: String,
+    status: {
+        type: Number,
         required: true
     },
-    description: {
+    title: {
         type: String,
-        required: true
+        required: true,
+        unique: true
+    },
+    description: {
+        type: String
     },
     date: {
         type: Schema.Types.Mixed
@@ -33,10 +38,6 @@ const eventSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Organization'
     },
-    creator: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    },
     activities: [
         {
             type: Schema.Types.ObjectId,
@@ -46,16 +47,6 @@ const eventSchema = new Schema({
     tags: [
         {
             type: Schema.Types.Mixed
-        }
-    ],
-    sponsors: [
-        {
-            type: String
-        }
-    ],
-    categories: [
-        {
-            type: String
         }
     ],
     imagePath: {

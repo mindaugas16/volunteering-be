@@ -1,5 +1,5 @@
 import Participation from '../../models/participation';
-import User from '../../models/user';
+import User from '../../models/users/user';
 import Activity from '../../models/activity';
 import { transformParticipation } from './merge';
 
@@ -34,14 +34,14 @@ export default {
             if (!user) {
                 throw new Error('User not found.');
             }
-            user.participations.push(result);
-            await user.save();
+            // user.participations.push(result);
+            // await user.save();
 
             if (!fetchedActivity) {
                 throw new Error('Activity not found.');
             }
-            fetchedActivity.participations.push(result);
-            await fetchedActivity.save();
+            // fetchedActivity.participations.push(result);
+            // await fetchedActivity.save();
 
             return result;
         } catch (err) {

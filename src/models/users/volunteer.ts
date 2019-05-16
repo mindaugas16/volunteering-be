@@ -27,7 +27,7 @@ const volunteerSchema = new Schema({
     favorites: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Participation'
+            ref: 'Event'
         }
     ]
 });

@@ -1,4 +1,4 @@
-import { Document, Schema } from 'mongoose';
+import { Schema } from 'mongoose';
 import User, { UserInterface } from './user';
 
 export interface OrganizationInterface extends UserInterface {
@@ -12,7 +12,8 @@ export interface OrganizationInterface extends UserInterface {
 const organizationSchema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     description: {
         type: String
@@ -23,7 +24,7 @@ const organizationSchema = new Schema({
     members: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'Volunteer'
         }
     ],
     events: [

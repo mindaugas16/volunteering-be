@@ -1,16 +1,29 @@
 import Event from '../../models/event';
-import User from '../../models/user';
+import User from '../../models/users/user';
 import Tag from '../../models/tag';
-import Organization from '../../models/organization';
+import Organization from '../../models/users/organization';
 import { transformDateRange, transformEvent } from './merge';
+import { clearImage } from 'helpers/file';
 
 export default {
-    events: async ({query, orderBy}) => {
+    events: async ({query, orderBy, statuses}) => {
         try {
-            const events = await Event.find({title: {$regex: query, $options: 'i'}})
-                .sort(orderBy);
+            let condition = null;
+            if (query) {
+                condition = {title: {$regex: query, $options: 'i'}};
+            }
 
-            return events.map(transformEvent);
+            if (statuses && statuses.length) {
+                condition = {...condition, status: {$in: statuses}};
+            }
+
+            let events = await Event.find(condition);
+
+            if (orderBy) {
+                events = events.sort(orderBy);
+            }
+
+            return events.map(event => transformEvent(event));
         } catch (err) {
             throw err;
         }
@@ -26,16 +39,12 @@ export default {
     },
     createEvent: async ({eventInput}, req) => {
         if (!req.isAuth) {
-            throw new Error('Unauthenticated!');
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
         }
         try {
-            const user = await User.findById(req.userId);
-            if (!user) {
-                throw new Error('User not found.');
-            }
-
-            const organization = await Organization.findById(eventInput.organizationId);
-
+            const organization = await Organization.findById(req.userId);
             if (!organization) {
                 throw new Error('Organization not found.');
             }
@@ -45,14 +54,10 @@ export default {
                 description: eventInput.description,
                 date: transformDateRange(eventInput.date),
                 location: eventInput.location,
-                creator: req.userId,
                 organization: organization._id,
                 imagePath: eventInput.imagePath
             });
             const result = await event.save();
-
-            user.createdEvents.push(event);
-            await user.save();
 
             organization.events.push(event);
             await organization.save();
@@ -70,29 +75,41 @@ export default {
         }
 
         try {
-            const user = await User.findById(req.userId);
-            if (!user) {
-                throw new Error('User not found.');
+            const organization = await Organization.findById(req.userId);
+            if (!organization) {
+                throw new Error('Organization not found.');
             }
 
             const event = await Event.findById(id);
 
-            if (!event) {
-                throw new Error('Event not found');
+            const imagePath = event.imagePath;
+
+            if (eventInput.imagePath) {
+                if (eventInput.imagePath !== 'remove') {
+                    event.imagePath = eventInput.imagePath;
+                } else if (imagePath) {
+                    clearImage(imagePath);
+                    event.imagePath = null;
+                }
             }
 
-            if (!event.creator._id.equals(user._id)) {
-                throw new Error('You can\'t update event details');
+            if (!organization._id.equals(event.organization._id)) {
+                throw new Error('You can not update this event');
             }
 
-            event.title = eventInput.name;
+            if (!event.status) {
+                throw new Error('Event status is required');
+            }
+
+            event.title = eventInput.title;
             event.description = eventInput.description;
             event.date = eventInput.date;
-            event.location = {...eventInput.location};
+            event.location = eventInput.location;
+            event.status = eventInput.status;
 
-            const updatedEvent = await event.save();
+            const savedEvent = await event.save();
 
-            return transformEvent(updatedEvent);
+            return transformEvent(savedEvent);
         } catch (err) {
             throw err;
         }
@@ -116,9 +133,9 @@ export default {
                 throw new Error('Event not found');
             }
 
-            if (!event.creator._id.equals(user._id)) {
-                throw new Error('You can\'t add tags');
-            }
+            // if (!event.creator._id.equals(user._id)) {
+            //     throw new Error('You can\'t add tags');
+            // }
 
             const newTag = new Tag({label: tagLabel});
             event.tags.push(newTag);
@@ -148,9 +165,9 @@ export default {
                 throw new Error('Event not found');
             }
 
-            if (!event.creator._id.equals(user._id)) {
-                throw new Error('You can\'t update tag');
-            }
+            // if (!event.creator._id.equals(user._id)) {
+            //     throw new Error('You can\'t update tag');
+            // }
             const foundTagIndex = event.tags.findIndex(({_id}) => _id.equals(tag._id));
             if (foundTagIndex < 0) {
                 throw new Error('Tag not found');
@@ -184,9 +201,9 @@ export default {
                 throw new Error('Event not found');
             }
 
-            if (!event.creator._id.equals(user._id)) {
-                throw new Error('You can\'t delete tag');
-            }
+            // if (!event.creator._id.equals(user._id)) {
+            //     throw new Error('You can\'t delete tag');
+            // }
             const foundTagIndex = event.tags.findIndex(tag => tag._id.equals(tagId));
             if (foundTagIndex < 0) {
                 throw new Error('Tag not found');

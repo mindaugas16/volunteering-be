@@ -1,7 +1,7 @@
-import { compareDates, toDate } from '../../helpers/date';
+import { compareDates, toDate } from 'helpers/date';
 import Activity from '../../models/activity';
+import Organization from '../../models/users/organization';
 import Event from '../../models/event';
-import User from '../../models/user';
 import { transformActivity, transformDateRange } from './merge';
 
 export default {
@@ -52,9 +52,9 @@ export default {
         });
         let createdActivity;
         try {
-            const user = await User.findById(req.userId);
-            if (!user) {
-                throw new Error('User not found.');
+            const organization = await Organization.findById(req.userId);
+            if (!organization) {
+                throw new Error('Organization not found.');
             }
             if (!fetchedEvent) {
                 throw new Error('Event not found.');
@@ -62,13 +62,72 @@ export default {
             const result = await activity.save();
             createdActivity = transformActivity(result);
 
-            user.createdActivities.push(createdActivity);
-            await user.save();
-
             fetchedEvent.activities.push(createdActivity);
             await fetchedEvent.save();
 
             return createdActivity;
+        } catch (err) {
+            throw err;
+        }
+    },
+    updateActivity: async ({id, activityInput}, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
+        }
+
+        const transformedDate = transformDateRange(activityInput.date);
+
+        if (compareDates(toDate(transformedDate.start), new Date()) === -1) {
+            throw new Error('Start date should be greater or equal today date.');
+        }
+
+        if (transformedDate.end && compareDates(toDate(transformedDate.start), toDate(transformedDate.end)) === 1) {
+            throw new Error('End date should be greater then start date.');
+        }
+
+        try {
+            const organization = await Organization.findById(req.userId);
+            if (!organization) {
+                throw new Error('Organization not found.');
+            }
+
+            const {eventId, ...rest} = activityInput;
+
+            // return Activity.findOneAndUpdate({_id: id}, rest, {new: true}, (err, doc) => {
+            //     if (err) {
+            //         throw new Error(err);
+            //     }
+            //
+            //     return transformActivity(doc);
+            // });
+            return null;
+
+        } catch (err) {
+            throw err;
+        }
+    },
+    deleteActivity: async ({id}, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
+        }
+
+        try {
+            const activity = await Activity.findById(id);
+
+            // if (activity.event.organization._id.equals(req.id)) {
+            //     throw new Error('You can not delete activity');
+            // }
+
+            await Activity.findByIdAndRemove(id);
+            const event = await Event.findById(activity.event);
+            (event.activities as any).pull(id);
+            await event.save();
+
+            return true;
         } catch (err) {
             throw err;
         }

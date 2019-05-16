@@ -1,7 +1,15 @@
 import { Schema, model, Document } from 'mongoose';
+import { UserInterface } from 'models/users/user';
+import { EventInterface } from 'models/event';
 
 export interface ActivityInterface extends Document {
-    participations: any[];
+    name: string;
+    description: string;
+    date: any;
+    volunteersNeeded: number;
+    event: EventInterface;
+    tags: string[];
+    volunteers: UserInterface[];
 }
 
 const activitySchema = new Schema({
@@ -14,10 +22,6 @@ const activitySchema = new Schema({
     },
     date: {
         type: Schema.Types.Mixed
-    },
-    creator: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
     },
     volunteersNeeded: {
         type: Number,
@@ -33,21 +37,12 @@ const activitySchema = new Schema({
             type: String
         }
     ],
-    participations: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Participation'
-        }
-    ],
     volunteers: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'Volunteer'
         }
-    ],
-    requirements: {
-        type: String
-    }
+    ]
 }, { timestamps: true });
 
 export default model<ActivityInterface>('Activity', activitySchema);
