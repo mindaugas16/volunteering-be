@@ -29,8 +29,7 @@ const volunteerSchema = new Schema({
     ],
     achievements: [
         {
-            type: Schema.Types.ObjectId,
-            ref: 'Achievement'
+            type: Schema.Types.Mixed
         }
     ],
     organizations: [
@@ -47,8 +46,7 @@ const volunteerSchema = new Schema({
     ],
     activities: [
         {
-            type: Schema.Types.ObjectId,
-            ref: 'Activity'
+            type: Schema.Types.Mixed
         }
     ]
 });

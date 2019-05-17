@@ -3,6 +3,7 @@ import User from '../../models/users/user';
 import Tag from '../../models/tag';
 import Organization from '../../models/users/organization';
 import Volunteer from '../../models/users/volunteer';
+import Achievement from '../../models/achievement';
 import { transformDateRange, transformEvent } from './merge';
 import { clearImage } from 'helpers/file';
 
@@ -256,12 +257,25 @@ export default {
                 throw new Error('Event not found');
             }
 
-            const volunteers = await Volunteer.find({_id: {$in: volunteerIds}});
+            const newAchievements = achievements.reduce(async (acc, a) => {
+                const achievement = await new Achievement(a);
+                acc.push(achievement);
 
-            volunteers.map(volunteer => {
-                volunteer.achievements.push(...achievements);
-                volunteer.markModified('achievements');
-                volunteer.save();
+                return acc;
+            }, []);
+
+            await newAchievements.then(async achievementsValues => {
+                await volunteerIds.forEach(async id => {
+                    const volunteer = await Volunteer.findById(id);
+
+                    if (!volunteer) {
+                        throw new Error('Volunteer not found');
+                    }
+
+                    volunteer.achievements.push(...achievementsValues);
+                    volunteer.markModified('achievements');
+                    volunteer.save();
+                });
             });
 
             return true;
