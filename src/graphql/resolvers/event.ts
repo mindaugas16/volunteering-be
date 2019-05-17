@@ -2,6 +2,7 @@ import Event from '../../models/event';
 import User from '../../models/users/user';
 import Tag from '../../models/tag';
 import Organization from '../../models/users/organization';
+import Volunteer from '../../models/users/volunteer';
 import { transformDateRange, transformEvent } from './merge';
 import { clearImage } from 'helpers/file';
 
@@ -230,6 +231,38 @@ export default {
 
             event.markModified('tags');
             await event.save();
+
+            return true;
+        } catch (err) {
+            throw err;
+        }
+    },
+    rewardVolunteers: async ({eventId, achievements, volunteerIds}, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
+        }
+
+        try {
+            const organization = await Organization.findById(req.userId);
+            if (!organization) {
+                throw new Error('Organization not found.');
+            }
+
+            const event = await Event.findById(eventId);
+
+            if (!event) {
+                throw new Error('Event not found');
+            }
+
+            const volunteers = await Volunteer.find({_id: {$in: volunteerIds}});
+
+            volunteers.map(volunteer => {
+                volunteer.achievements.push(...achievements);
+                volunteer.markModified('achievements');
+                volunteer.save();
+            });
 
             return true;
         } catch (err) {

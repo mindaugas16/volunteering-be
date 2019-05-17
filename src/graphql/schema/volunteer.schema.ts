@@ -4,6 +4,12 @@ export const volunteerTypeDefs =
             _id: ID!
             firstName: String!
             activities: [Activity]
+            achievements: [Achievement]
+        }
+
+
+        extend type Query {
+            getVolunteer: Volunteer!
         }
     `
 ;

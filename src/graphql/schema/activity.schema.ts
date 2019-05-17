@@ -30,5 +30,7 @@ export const activityTypeDefs =
             createActivity(activityInput: ActivityInput!): Activity!
             updateActivity(id: ID!, activityInput: ActivityInput!): Activity!
             deleteActivity(id: ID!): Boolean
+
+            registerToActivity(activityId: ID!): Activity
         }
     `;
