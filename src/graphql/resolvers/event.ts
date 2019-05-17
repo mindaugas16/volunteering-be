@@ -2,6 +2,8 @@ import Event from '../../models/event';
 import User from '../../models/users/user';
 import Tag from '../../models/tag';
 import Organization from '../../models/users/organization';
+import Volunteer from '../../models/users/volunteer';
+import Achievement from '../../models/achievement';
 import { transformDateRange, transformEvent } from './merge';
 import { clearImage } from 'helpers/file';
 
@@ -230,6 +232,51 @@ export default {
 
             event.markModified('tags');
             await event.save();
+
+            return true;
+        } catch (err) {
+            throw err;
+        }
+    },
+    rewardVolunteers: async ({eventId, achievements, volunteerIds}, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
+        }
+
+        try {
+            const organization = await Organization.findById(req.userId);
+            if (!organization) {
+                throw new Error('Organization not found.');
+            }
+
+            const event = await Event.findById(eventId);
+
+            if (!event) {
+                throw new Error('Event not found');
+            }
+
+            const newAchievements = achievements.reduce(async (acc, a) => {
+                const achievement = await new Achievement(a);
+                acc.push(achievement);
+
+                return acc;
+            }, []);
+
+            await newAchievements.then(async achievementsValues => {
+                await volunteerIds.forEach(async id => {
+                    const volunteer = await Volunteer.findById(id);
+
+                    if (!volunteer) {
+                        throw new Error('Volunteer not found');
+                    }
+
+                    volunteer.achievements.push(...achievementsValues);
+                    volunteer.markModified('achievements');
+                    volunteer.save();
+                });
+            });
 
             return true;
         } catch (err) {

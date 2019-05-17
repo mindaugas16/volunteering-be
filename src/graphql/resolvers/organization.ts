@@ -1,5 +1,6 @@
 import User from '../../models/users/user';
 import Organization from '../../models/users/organization';
+import Volunteer from '../../models/users/volunteer';
 import { transformOrganization } from './merge';
 
 export default {
@@ -44,9 +45,9 @@ export default {
         }
 
         try {
-            const user = await User.findById(req.userId);
-            if (!user) {
-                throw new Error('User not found.');
+            const volunteer = await Volunteer.findById(req.userId);
+            if (!volunteer) {
+                throw new Error('Volunteer not found.');
             }
 
             const organization = await Organization.findById(args.organizationId);
@@ -60,11 +61,11 @@ export default {
             //     throw new Error('You already joined this group');
             // }
 
-            organization.members.push(user._id);
+            organization.members.push(volunteer._id);
             await organization.save();
 
-            // user.organizations.push(args.organizationId);
-            // await user.save();
+            volunteer.organizations.push(args.organizationId);
+            await volunteer.save();
 
             return true;
         } catch (err) {

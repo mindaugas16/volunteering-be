@@ -14,6 +14,7 @@ export const userTypeDefs = `
            contacts: String
            password: String
            role: String
+           organizations: [Organization]
     }
 
     input UserInput {

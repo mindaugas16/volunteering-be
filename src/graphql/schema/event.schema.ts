@@ -41,5 +41,7 @@ export const eventTypeDefs =
             updateEvent(id: ID!, eventInput: EventInput!): Event!
             addEventTag(id: ID!, tagLabel: String!): Tag!
             deleteEventTag(id: ID!): Boolean!
+
+            rewardVolunteers(eventId: ID!, achievements: [AchievementInput!]!, volunteerIds: [ID!]!): Boolean
         }
     `;

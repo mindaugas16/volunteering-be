@@ -60,11 +60,11 @@ export const transformActivity = activity =>
     ({
         ...activity._doc,
         _id: activity.id,
-        date: transformDateRange(activity._doc.date),
+        date: transformDateRange(activity.date),
         volunteers: users.bind(this, activity.volunteers),
-        event: singleEvent.bind(this, activity._doc.event),
-        createdAt: dateToString(activity._doc.createdAt),
-        updatedAt: dateToString(activity._doc.updatedAt)
+        event: singleEvent.bind(this, activity.event),
+        createdAt: dateToString(activity.createdAt),
+        updatedAt: dateToString(activity.updatedAt)
     });
 
 export const transformBooking = booking =>

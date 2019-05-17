@@ -2,6 +2,7 @@ import { compareDates, toDate } from 'helpers/date';
 import Activity from '../../models/activity';
 import Organization from '../../models/users/organization';
 import Event from '../../models/event';
+import Volunteer from '../../models/users/volunteer';
 import { transformActivity, transformDateRange } from './merge';
 
 export default {
@@ -128,6 +129,39 @@ export default {
             await event.save();
 
             return true;
+        } catch (err) {
+            throw err;
+        }
+    },
+    registerToActivity: async ({activityId}, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
+        }
+
+        try {
+            const activity = await Activity.findById(activityId);
+
+            if (!activity) {
+                throw new Error('Activity not found.');
+            }
+
+            const volunteer = await Volunteer.findById(req.userId);
+
+            if (!volunteer) {
+                throw new Error('Volunteer not found.');
+            }
+
+            const updateActivity = activity.volunteers.push(volunteer._id);
+
+            await activity.save();
+
+            volunteer.activities.push(activity._id);
+
+            await volunteer.save();
+
+            return transformActivity(updateActivity);
         } catch (err) {
             throw err;
         }

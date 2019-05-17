@@ -1,4 +1,12 @@
 export const sharedTypeDefs = `
+
+        type Achievement {
+            _id: ID!
+            label: String!
+            value: Int
+            icon: String
+        }
+
         type Tag {
             _id: ID!
             label: String!
@@ -21,6 +29,12 @@ export const sharedTypeDefs = `
         input DateRangeInput {
             start: String!
             end: String
+        }
+
+        input AchievementInput {
+            label: String!
+            icon: String
+            value: Int
         }
 
         input TagInput {
