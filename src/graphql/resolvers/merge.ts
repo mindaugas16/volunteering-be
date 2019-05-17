@@ -30,7 +30,7 @@ export const transformUser = user =>
         ...user._doc,
         _id: user.id,
         password: null,
-        organizations: () => organizationLoader.loadMany(user._doc.organizations)
+        organizations: user.organizations ? () => organizationLoader.loadMany(user.organizations) : []
     });
 
 export const transformOrganization = organization =>
