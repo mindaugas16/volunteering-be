@@ -1,6 +1,6 @@
-import { Schema, model, Document } from 'mongoose';
-import { UserInterface } from 'models/users/user';
+import { Document, model, Schema } from 'mongoose';
 import { EventInterface } from 'models/event';
+import { ParticipationInterface } from 'models/participation';
 
 export interface ActivityInterface extends Document {
     name: string;
@@ -9,7 +9,7 @@ export interface ActivityInterface extends Document {
     volunteersNeeded: number;
     event: EventInterface;
     tags: string[];
-    volunteers: UserInterface[];
+    participation: ParticipationInterface[];
 }
 
 const activitySchema = new Schema({
@@ -37,12 +37,12 @@ const activitySchema = new Schema({
             type: String
         }
     ],
-    volunteers: [
+    participation: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Volunteer'
+            ref: 'Participation'
         }
     ]
-}, { timestamps: true });
+}, {timestamps: true});
 
 export default model<ActivityInterface>('Activity', activitySchema);

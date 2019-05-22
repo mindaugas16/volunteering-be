@@ -9,7 +9,7 @@ export const activityTypeDefs =
             createdAt: String!
             updatedAt: String!
             event: Event!
-            volunteers: [Volunteer!]
+            participation: [Participation!]
             volunteersNeeded: Int!
         }
 

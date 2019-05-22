@@ -1,4 +1,14 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
+import { VolunteerInterface } from 'models/users/volunteer';
+import { ActivityInterface } from 'models/activity';
+
+export interface ParticipationInterface extends Document {
+    volunteer: VolunteerInterface;
+    activity: ActivityInterface;
+    additionalInformation: string;
+    createdAt: string;
+    updatedAt: string;
+}
 
 const participationSchema = new Schema({
     volunteer: {
@@ -16,4 +26,4 @@ const participationSchema = new Schema({
     }
 }, { timestamps: true });
 
-export default model('Participation', participationSchema);
+export default model<ParticipationInterface>('Participation', participationSchema);
