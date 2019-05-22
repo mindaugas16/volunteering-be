@@ -4,7 +4,7 @@ import Organization from '../../models/users/organization';
 import Event from '../../models/event';
 import Volunteer from '../../models/users/volunteer';
 import Participation from '../../models/participation';
-import { transformActivity, transformDateRange } from './merge';
+import { transformActivity, transformDateRange, transformParticipation } from './merge';
 
 export default {
     activities: async () => {
@@ -154,26 +154,26 @@ export default {
                 throw new Error('Volunteer not found.');
             }
 
-            if (activity.participation.find(v => v.volunteer._id === volunteer._id)) {
-                throw new Error('You are already signed up.');
-            }
+            // if (!!activity.participation.find(part => part.volunteer._id === volunteer._id)) {
+            //     throw new Error('You are already signed up.');
+            // }
 
             const participation = new Participation({
-                volunteer,
-                activity
+                volunteer: req.userId,
+                activity: activityId
             });
 
             const newParticipation = await participation.save();
 
             activity.participation.push(newParticipation._id);
 
-            const updateActivity = await activity.save();
+            await activity.save();
 
             volunteer.participation.push(participation._id);
 
             await volunteer.save();
 
-            return transformActivity(updateActivity);
+            return transformParticipation(participation);
         } catch (err) {
             throw err;
         }

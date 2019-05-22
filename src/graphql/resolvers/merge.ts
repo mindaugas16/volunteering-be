@@ -64,7 +64,7 @@ export const transformActivity = activity =>
         ...activity._doc,
         _id: activity.id,
         date: transformDateRange(activity.date),
-        participation: multipleParticipation(activity.participation),
+        participation: multipleParticipation(activity._doc.participation),
         event: singleEvent.bind(this, activity.event),
         createdAt: dateToString(activity.createdAt),
         updatedAt: dateToString(activity.updatedAt)
