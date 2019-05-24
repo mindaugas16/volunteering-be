@@ -13,7 +13,7 @@ import { dateToString } from 'helpers/date';
 
 const transporter = nodemailer.createTransport(sendgridTransport({
     auth: {
-        api_key: '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'
+        api_key: process.env.SEND_GRID_API_KEY
     }
 }));
 
@@ -210,9 +210,9 @@ export default {
                 from: 'no-reply@my-volunteering.herokuapp.com',
                 subject: 'Password reset',
                 html: `
-                            <h1>Reset password</h1>
-                            <p>You requested a password reset</p>
-                            <p>Click this <a href="https://my-volunteering.herokuapp.com/auth/reset/${token}">link</a> to set a new password</p>
+                      <h1>Reset password</h1>
+                      <p>You requested a password reset</p>
+                      <p>Click this <a href="https://my-volunteering.herokuapp.com/auth/reset/${token}">link</a> to set a new password</p>
                         `
             });
 
@@ -232,6 +232,58 @@ export default {
             user.password = await bcrypt.hash(password, 12);
             user.resetToken = undefined;
             user.resetTokenExpiresAt = undefined;
+
+            user.save();
+
+            return true;
+        } catch (err) {
+            throw err;
+        }
+    },
+    changePassword: async ({oldPassword, newPassword, repeatPassword}, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
+        }
+        try {
+            const user = await User.findById(req.userId);
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            const errors = [];
+
+            const isEqual = await bcrypt.compare(oldPassword, user.password);
+
+
+            if (!isEqual) {
+                errors.push({
+                    oldPassword: 'notMatchToCurrent'
+                });
+            } else {
+                if (oldPassword === newPassword) {
+                    errors.push({
+                        newPassword: 'unique'
+                    });
+                }
+
+                if (newPassword !== repeatPassword) {
+                    errors.push({
+                        repeatPassword: 'notMatch'
+                    });
+                }
+            }
+
+            if (errors.length) {
+                const error = new Error('Invalid input') as any;
+                error.data = errors;
+                error.code = 400;
+                throw error;
+            }
+
+            user.passwordResetAt = dateToString(new Date());
+            user.password = await bcrypt.hash(newPassword, 12);
 
             user.save();
 

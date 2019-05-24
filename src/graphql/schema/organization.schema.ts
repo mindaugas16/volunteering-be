@@ -5,7 +5,7 @@ export const organizationTypeDefs =
             email: String!
             firstName: String!
             lastName: String!
-            name: String!
+            organizationName: String!
             description: String
 
             location: Location
@@ -15,7 +15,7 @@ export const organizationTypeDefs =
 
         input OrganizationInput {
             creatorId: ID
-            name: String!
+            organizationName: String!
             description: String
             location: LocationInput
         }

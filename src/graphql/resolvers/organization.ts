@@ -128,7 +128,7 @@ export default {
             //     throw new Error('You can\'t update organization details');
             // }
 
-            organization.name = organizationInput.name;
+            organization.organizationName = organizationInput.organizationName;
             organization.description = organizationInput.description;
             organization.location = organizationInput.location;
 

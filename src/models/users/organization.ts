@@ -2,7 +2,7 @@ import { Schema } from 'mongoose';
 import User, { UserInterface } from './user';
 
 export interface OrganizationInterface extends UserInterface {
-    name: string;
+    organizationName: string;
     description: string;
     location: string;
     events: any[];
@@ -10,7 +10,7 @@ export interface OrganizationInterface extends UserInterface {
 }
 
 const organizationSchema = new Schema({
-    name: {
+    organizationName: {
         type: String,
         required: true,
         unique: true

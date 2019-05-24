@@ -7,6 +7,7 @@ import { activityTypeDefs } from 'graphql/schema/activity.schema';
 import { volunteerTypeDefs } from 'graphql/schema/volunteer.schema';
 import { participationTypeDefs } from 'graphql/schema/participation.schema';
 import { tagTypeDefs } from 'graphql/schema/tag.schema';
+import { sponsorTypeDefs } from 'graphql/schema/sponsor.schema';
 
 const rootTypeDefs = `
   type Query
@@ -27,6 +28,7 @@ export default makeExecutableSchema({
         activityTypeDefs,
         volunteerTypeDefs,
         participationTypeDefs,
-        tagTypeDefs
+        tagTypeDefs,
+        sponsorTypeDefs
     ]
 });
