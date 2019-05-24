@@ -1,5 +1,11 @@
 export const sharedTypeDefs = `
 
+        type CustomField {
+            id: String!
+            title: String!
+            value: String!
+        }
+
         type Achievement {
             _id: ID!
             label: String!
@@ -39,6 +45,12 @@ export const sharedTypeDefs = `
             city: String
             country: String
             zipCode: String
+        }
+
+        input CustomFieldInput {
+            id: String!
+            title: String!
+            value: String!
         }
 
         extend type Mutation {

@@ -81,7 +81,9 @@ export default {
                 date: transformDateRange(eventInput.date),
                 location: eventInput.location,
                 organization: organization._id,
-                imagePath: eventInput.imagePath
+                imagePath: eventInput.imagePath,
+                customFields: eventInput.customFields,
+                status: eventInput.status
             });
             const result = await event.save();
 

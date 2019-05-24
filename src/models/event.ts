@@ -13,6 +13,7 @@ export interface EventInterface extends Document {
     tags: any[];
     imagePath: string;
     status: EventStatus;
+    customFields: any[];
 }
 
 const eventSchema = new Schema({
@@ -45,6 +46,11 @@ const eventSchema = new Schema({
         }
     ],
     tags: [
+        {
+            type: Schema.Types.Mixed
+        }
+    ],
+    customFields: [
         {
             type: Schema.Types.Mixed
         }

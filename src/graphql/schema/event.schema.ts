@@ -20,6 +20,7 @@ export const eventTypeDefs =
             location: Location
             tags: [Tag]
             activities: [Activity!]!
+            customFields: [CustomField!]
         }
 
         input EventInput {
@@ -29,6 +30,7 @@ export const eventTypeDefs =
             date: DateRangeInput!
             location: LocationInput
             status: Int!
+            customFields: [CustomFieldInput] 
         }
 
         extend type Query {
