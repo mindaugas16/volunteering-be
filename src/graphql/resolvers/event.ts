@@ -8,7 +8,7 @@ import { transformDateRange, transformEvent } from './merge';
 import { clearImage } from 'helpers/file';
 
 export default {
-    events: async ({query, location, orderBy, statuses, tags}) => {
+    events: async ({query, location, orderBy, statuses, tags, organizationId}) => {
         try {
             let condition = null;
             if (query) {
@@ -33,6 +33,13 @@ export default {
                 condition = {
                     ...condition,
                     'tags.label': {$in: tags}
+                };
+            }
+
+            if (organizationId) {
+                condition = {
+                    ...condition,
+                    organization: organizationId
                 };
             }
 

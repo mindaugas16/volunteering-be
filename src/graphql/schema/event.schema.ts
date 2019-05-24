@@ -33,7 +33,7 @@ export const eventTypeDefs =
 
         extend type Query {
             event(eventId: ID!): Event!
-            events(query: String, location: String, orderBy: String, statuses: [Int], tags: [String]): [Event!]!
+            events(query: String, location: String, orderBy: String, statuses: [Int], tags: [String], organizationId: ID): [Event!]!
         }
 
         extend type Mutation {
