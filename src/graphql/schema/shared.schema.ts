@@ -40,5 +40,10 @@ export const sharedTypeDefs = `
             country: String
             zipCode: String
         }
+
+        extend type Mutation {
+            getResetToken(email: String!): Boolean
+            resetPassword(token: String!, password: String!): Boolean
+        }
     `
 ;

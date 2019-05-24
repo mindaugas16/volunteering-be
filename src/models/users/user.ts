@@ -9,6 +9,10 @@ export interface UserInterface extends Document {
     lastName: string;
     activities: any[];
     postalCode: string;
+    passwordResetAt: string;
+
+    resetToken: string;
+    resetTokenExpiresAt: number;
 }
 
 const userSchema = new Schema({
@@ -39,7 +43,10 @@ const userSchema = new Schema({
     role: {
         type: String,
         required: true
-    }
+    },
+    passwordResetAt: String,
+    resetToken: String,
+    resetTokenExpiresAt: Date
 });
 
 export default model<UserInterface>('User', userSchema);

@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { isEmail } from 'validator';
@@ -6,6 +7,15 @@ import Volunteer from '../../models/users/volunteer';
 import Organization from '../../models/users/organization';
 import Sponsor from '../../models/users/sponsor';
 import { transformUser } from './merge';
+import * as nodemailer from 'nodemailer';
+import sendgridTransport from 'nodemailer-sendgrid-transport';
+import { dateToString } from 'helpers/date';
+
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth: {
+        api_key: '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'
+    }
+}));
 
 export default {
     createUser: async ({userInput, userRole}) => {
@@ -157,6 +167,75 @@ export default {
             }
 
             return transformUser(user);
+        } catch (err) {
+            throw err;
+        }
+    },
+    getResetToken: async ({email}, req) => {
+        const buffer = crypto.randomBytes(32);
+
+        try {
+            const errors = [];
+
+            if (!isEmail(email)) {
+                errors.push({
+                    email: 'invalidEmail'
+                });
+            }
+
+            if (errors.length) {
+                const error = new Error('Invalid input') as any;
+                error.data = errors;
+                error.code = 400;
+                throw error;
+            }
+
+            const token = buffer.toString('hex');
+            const user = await User.findOne({email});
+            if (!user) {
+                // Return true then user not found to doesn't let other users to know that this email address are registered to system
+                return true;
+            }
+
+            if (user.resetTokenExpiresAt > Date.now()) {
+                throw new Error('Something went wrong');
+            }
+
+            user.resetToken = token;
+            user.resetTokenExpiresAt = Date.now() + 3600 * 1000;
+
+            user.save();
+            transporter.sendMail({
+                to: user.email,
+                from: 'no-reply@my-volunteering.herokuapp.com',
+                subject: 'Password reset',
+                html: `
+                            <h1>Reset password</h1>
+                            <p>You requested a password reset</p>
+                            <p>Click this <a href="https://my-volunteering.herokuapp.com/auth/reset/${token}">link</a> to set a new password</p>
+                        `
+            });
+
+            return true;
+        } catch (err) {
+            throw err;
+
+        }
+    },
+    resetPassword: async ({token, password}, req) => {
+        try {
+            const user = await User.findOne({resetToken: token, resetTokenExpiresAt: {$gt: Date.now()}});
+            if (!user) {
+                throw new Error('Reset token is invalid');
+            }
+            user.passwordResetAt = dateToString(new Date());
+            user.password = await bcrypt.hash(password, 12);
+            user.resetToken = undefined;
+            user.resetTokenExpiresAt = undefined;
+
+            user.save();
+
+            return true;
         } catch (err) {
             throw err;
         }
