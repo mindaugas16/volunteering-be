@@ -8,7 +8,7 @@ export default {
         try {
             let condition = null;
             if (query) {
-                condition = {name: {$regex: query, $options: 'i'}};
+                condition = {organizationName: {$regex: query, $options: 'i'}};
             }
 
             if (location) {
