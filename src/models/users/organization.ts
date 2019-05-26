@@ -7,6 +7,8 @@ export interface OrganizationInterface extends UserInterface {
     location: string;
     events: any[];
     members: any[];
+    organizationLogo: string;
+    organizationWebsite: string;
 }
 
 const organizationSchema = new Schema({
@@ -32,7 +34,9 @@ const organizationSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Event'
         }
-    ]
+    ],
+    organizationLogo: String,
+    organizationWebsite: String
 });
 
 export default User.discriminator<OrganizationInterface>('Organization', organizationSchema);

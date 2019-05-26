@@ -78,6 +78,7 @@ app.use('/graphql', graphqlHttp({
         if (!error.originalError) {
             return error;
         }
+
         const data = error.originalError.data;
         const code = error.originalError.code || 500;
 

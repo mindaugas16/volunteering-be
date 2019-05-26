@@ -11,6 +11,8 @@ export const organizationTypeDefs =
             location: Location
             events: [Event!]
             members: [User!]!
+            organizationLogo: String
+            organizationWebsite: String
         }
 
         input OrganizationInput {
@@ -18,6 +20,8 @@ export const organizationTypeDefs =
             organizationName: String!
             description: String
             location: LocationInput
+            organizationLogo: String
+            organizationWebsite: String
         }
 
         extend type Query {

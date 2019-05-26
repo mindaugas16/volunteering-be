@@ -75,6 +75,12 @@ export default {
                 throw new Error('Organization not found.');
             }
 
+            const sameEvent = await Event.findOne({title: eventInput.title});
+
+            if (sameEvent) {
+                throw new Error('Event title should be unique.');
+            }
+
             const event = new Event({
                 title: eventInput.title,
                 description: eventInput.description,
@@ -134,6 +140,7 @@ export default {
             event.date = eventInput.date;
             event.location = eventInput.location;
             event.status = eventInput.status;
+            event.customFields = eventInput.customFields;
 
             const savedEvent = await event.save();
 

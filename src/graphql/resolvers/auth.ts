@@ -35,11 +35,7 @@ export default {
                 default:
                     type = User;
             }
-            const user = await type.findOne({email: userInput.email});
-
-            if (user) {
-                throw new Error('User already exist!');
-            }
+            const user = await User.findOne({email: userInput.email});
 
             const errors = [];
 
@@ -53,6 +49,28 @@ export default {
                 errors.push({
                     termsAndConditions: 'required'
                 });
+            }
+
+            if (user) {
+                errors.push({
+                    email: 'alreadyTaken'
+                });
+            }
+
+            if (role === 'ORGANIZATION') {
+                const organization = await Organization.findOne({organizationName: userInput.organizationName});
+                if (organization) {
+                    errors.push({
+                        organizationName: 'alreadyTaken'
+                    });
+                }
+            } else if (role === 'SPONSOR') {
+                const sponsor = await Sponsor.findOne({sponsorName: userInput.sponsorName});
+                if (sponsor) {
+                    errors.push({
+                        sponsorName: 'alreadyTaken'
+                    });
+                }
             }
 
             if (errors.length) {
@@ -163,7 +181,9 @@ export default {
         try {
             const user = await User.findById(req.userId);
             if (!user) {
-                throw new Error('User not found.');
+                const error = new Error('User not found.') as any;
+                error.code = 404;
+                throw error;
             }
 
             return transformUser(user);

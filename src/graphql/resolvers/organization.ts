@@ -131,6 +131,8 @@ export default {
             organization.organizationName = organizationInput.organizationName;
             organization.description = organizationInput.description;
             organization.location = organizationInput.location;
+            organization.organizationLogo = organizationInput.organizationLogo;
+            organization.organizationWebsite = organizationInput.organizationWebsite;
 
             const updatedOrganization = await organization.save();
 

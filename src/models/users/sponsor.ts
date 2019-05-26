@@ -4,6 +4,8 @@ import User, { UserInterface } from './user';
 export interface SponsorInterface extends UserInterface {
     _id: string;
     sponsorName: string;
+    sponsorLogo: string;
+    sponsorWebsite: string;
 }
 
 const sponsorSchema = new Schema({
@@ -12,6 +14,8 @@ const sponsorSchema = new Schema({
         required: true,
         unique: true
     },
+    organizationLogo: String,
+    sponsorWebsite: String,
     extra: String,
     sponsoredEvents: [
         {
