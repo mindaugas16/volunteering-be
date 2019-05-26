@@ -10,7 +10,7 @@ import * as faker from 'faker';
 import { EventStatus } from 'types/event-status.enum';
 
 export default {
-    events: async ({query, location, orderBy, statuses, tags, organizationId, page}) => {
+    events: async ({query, location, orderBy, statuses, tags, organizationIds, page}) => {
         try {
             let condition = null;
             if (query) {
@@ -38,10 +38,10 @@ export default {
                 };
             }
 
-            if (organizationId) {
+            if (organizationIds && organizationIds.length) {
                 condition = {
                     ...condition,
-                    organization: organizationId
+                    organization: {$in: organizationIds}
                 };
             }
 
@@ -51,6 +51,7 @@ export default {
 
             const perPage = 12;
             let events = await Event.find(condition)
+                .sort({updatedAt: -1})
                 .skip((page - 1) * perPage)
                 .limit(perPage);
 

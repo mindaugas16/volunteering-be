@@ -4,7 +4,7 @@ import Volunteer from '../../models/users/volunteer';
 import { transformOrganization } from './merge';
 
 export default {
-    organizations: async ({query, location}) => {
+    organizations: async ({query, location, page}) => {
         try {
             let condition = null;
             if (query) {
@@ -20,10 +20,21 @@ export default {
                     ]
                 };
             }
-            const organization = await Organization.find(condition);
 
-            return organization.map(o =>
-                transformOrganization(o));
+            if (!page) {
+                page = 1;
+            }
+
+            const perPage = 12;
+            const organization = await Organization.find(condition)
+                .skip((page - 1) * perPage)
+                .limit(perPage)
+                .sort({createdAt: 1});
+
+            return {
+                organizations: organization.map(o => transformOrganization(o)),
+                totalCount: Organization.count(condition)
+            };
         } catch (err) {
             throw err;
         }

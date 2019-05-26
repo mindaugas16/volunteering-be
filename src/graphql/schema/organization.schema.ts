@@ -15,6 +15,11 @@ export const organizationTypeDefs =
             organizationWebsite: String
         }
 
+        type OrganizationsResults {
+            totalCount: Int
+            organizations: [Organization!]!
+        }
+
         input OrganizationInput {
             creatorId: ID
             organizationName: String!
@@ -26,7 +31,7 @@ export const organizationTypeDefs =
 
         extend type Query {
             organization(organizationId: ID!): Organization!
-            organizations(query: String, location: String): [Organization!]!
+            organizations(query: String, location: String, page: Int): OrganizationsResults
         }
 
         extend type Mutation {
