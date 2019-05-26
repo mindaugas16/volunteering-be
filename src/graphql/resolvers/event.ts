@@ -6,9 +6,11 @@ import Volunteer from '../../models/users/volunteer';
 import Achievement from '../../models/achievement';
 import { transformDateRange, transformEvent } from './merge';
 import { clearImage } from 'helpers/file';
+import * as faker from 'faker';
+import { EventStatus } from 'types/event-status.enum';
 
 export default {
-    events: async ({query, location, orderBy, statuses, tags, organizationId}) => {
+    events: async ({query, location, orderBy, statuses, tags, organizationId, page}) => {
         try {
             let condition = null;
             if (query) {
@@ -43,13 +45,23 @@ export default {
                 };
             }
 
-            let events = await Event.find(condition);
+            if (!page) {
+                page = 1;
+            }
+
+            const perPage = 12;
+            let events = await Event.find(condition)
+                .skip((page - 1) * perPage)
+                .limit(perPage);
 
             if (orderBy) {
                 events = events.sort(orderBy);
             }
 
-            return events.map(event => transformEvent(event));
+            return {
+                events: events.map(event => transformEvent(event)),
+                totalCount: Event.count(condition)
+            };
         } catch (err) {
             throw err;
         }
@@ -298,5 +310,47 @@ export default {
         } catch (err) {
             throw err;
         }
+    },
+    mockEvents: async ({count, organizationId}, req) => {
+        const organization = await Organization.findById(organizationId);
+
+        if (!organization) {
+            throw new Error('Organization not found');
+        }
+
+        const events = [];
+        let i = 0;
+
+        while (i < count) {
+            const status = EventStatus.PUBLIC;
+            const title = faker.company.catchPhraseAdjective();
+            const description = faker.lorem.paragraph(3);
+            const date = {
+                start: faker.date.recent(faker.random.number({min: 2, max: 10}) * -1),
+                end: faker.date.recent(faker.random.number({min: 11, max: 20}) * -1)
+            };
+            const location = null;
+
+            const event = new Event({
+                title,
+                status,
+                description,
+                date,
+                location,
+                organization: organizationId
+            });
+
+            events.push(event);
+            i++;
+        }
+
+        return Event.insertMany(events)
+            .then(e => {
+                organization.events.push(...e.map(event => event._id));
+                organization.markModified('events');
+                organization.save();
+
+                return e;
+            });
     }
 };

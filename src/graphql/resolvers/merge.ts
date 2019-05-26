@@ -6,6 +6,8 @@ import Organization from '../../models/users/organization';
 import DataLoader from 'dataloader';
 import { dateToString } from 'helpers/date';
 
+const ORGANIZATION_EVENTS_LIMIT = 12;
+
 const eventLoader = new DataLoader(eventIds => events(eventIds));
 
 const activityLoader = new DataLoader(activityIds => activities(activityIds));
@@ -126,7 +128,8 @@ export const singleEvent = async eventId => {
 
 export const events = async eventIds => {
     try {
-        const foundEvents = await Event.find({_id: {$in: eventIds}});
+        const foundEvents = await Event.find({_id: {$in: eventIds}})
+            .sort({createdAt: 1});
 
         return foundEvents.map(event =>
             transformEvent(event));

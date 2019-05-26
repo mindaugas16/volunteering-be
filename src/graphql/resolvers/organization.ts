@@ -22,8 +22,8 @@ export default {
             }
             const organization = await Organization.find(condition);
 
-            return organization.map(event =>
-                transformOrganization(event));
+            return organization.map(o =>
+                transformOrganization(o));
         } catch (err) {
             throw err;
         }

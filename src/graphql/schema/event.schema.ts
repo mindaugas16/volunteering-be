@@ -23,6 +23,11 @@ export const eventTypeDefs =
             customFields: [CustomField!]
         }
 
+        type EventResults {
+            events: [Event!]!
+            totalCount: Int!
+        }
+
         input EventInput {
             title: String!
             description: String
@@ -30,12 +35,13 @@ export const eventTypeDefs =
             date: DateRangeInput!
             location: LocationInput
             status: Int!
-            customFields: [CustomFieldInput] 
+            customFields: [CustomFieldInput]
         }
 
         extend type Query {
             event(eventId: ID!): Event!
-            events(query: String, location: String, orderBy: String, statuses: [Int], tags: [String], organizationId: ID): [Event!]!
+            events(query: String, location: String, orderBy: String,
+             statuses: [Int], tags: [String], organizationId: ID, page: Int): EventResults!
         }
 
         extend type Mutation {
@@ -45,5 +51,6 @@ export const eventTypeDefs =
             deleteEventTag(id: ID!): Boolean!
 
             rewardVolunteers(eventId: ID!, achievements: [AchievementInput!]!, volunteerIds: [ID!]!): Boolean
+            mockEvents(count: Int!, organizationId: ID!): [Event]
         }
     `;
