@@ -1,15 +1,16 @@
 export const sharedTypeDefs = `
 
+        type CustomField {
+            id: String!
+            title: String!
+            value: String!
+        }
+
         type Achievement {
             _id: ID!
             label: String!
             value: Int
             icon: String
-        }
-
-        type Tag {
-            _id: ID!
-            label: String!
         }
 
         type Location {
@@ -37,15 +38,6 @@ export const sharedTypeDefs = `
             value: Int
         }
 
-        input TagInput {
-            label: String!
-        }
-
-        input TagUpdateInput {
-            _id: ID!
-            label: String!
-        }
-
         input LocationInput {
             title: String
             address: String
@@ -54,55 +46,16 @@ export const sharedTypeDefs = `
             country: String
             zipCode: String
         }
+
+        input CustomFieldInput {
+            id: String!
+            title: String!
+            value: String!
+        }
+
+        extend type Mutation {
+            getResetToken(email: String!): Boolean
+            resetPassword(token: String!, password: String!): Boolean
+        }
     `
 ;
-
-// export default buildSchema(`
-//
-//         type Participation {
-//             volunteer: User!
-//             activity: Activity!
-//             additionalInformation: String
-//             createdAt: String!
-//             updatedAt: String!
-//         }
-//
-//
-//
-
-//
-//         input LocationInput {
-//             title: String
-//             address: String
-//             address2: String
-//             city: String
-//             country: String
-//             zipCode: String
-//         }
-//
-//         input ParticipationInput {
-//             activityId: ID!
-//             additionalInformation: String
-//         }
-//
-//         type RootQuery {
-//             participations: [Participation!]!
-//         }
-//
-//         type RootMutation {
-//
-//             updateEventTag(id: ID!, tag: TagUpdateInput!): Tag!
-//             deleteEventTag(id: ID!, tagId: ID!): Tag!
-//
-//
-//
-//             participate(participationInput: ParticipationInput): Participation
-//
-//         }
-//
-//         schema {
-//             query: RootQuery
-//             mutation: RootMutation
-//         }
-//
-// `);

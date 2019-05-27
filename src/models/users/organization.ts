@@ -2,15 +2,17 @@ import { Schema } from 'mongoose';
 import User, { UserInterface } from './user';
 
 export interface OrganizationInterface extends UserInterface {
-    name: string;
+    organizationName: string;
     description: string;
     location: string;
     events: any[];
     members: any[];
+    organizationLogo: string;
+    organizationWebsite: string;
 }
 
 const organizationSchema = new Schema({
-    name: {
+    organizationName: {
         type: String,
         required: true,
         unique: true
@@ -32,7 +34,9 @@ const organizationSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Event'
         }
-    ]
+    ],
+    organizationLogo: String,
+    organizationWebsite: String
 });
 
 export default User.discriminator<OrganizationInterface>('Organization', organizationSchema);

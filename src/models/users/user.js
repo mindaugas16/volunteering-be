@@ -1,21 +1,7 @@
-import { Document, model, Schema } from 'mongoose';
-
-export interface UserInterface extends Document {
-    _doc: any;
-    _id: any;
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    activities: any[];
-    postalCode: string;
-    passwordResetAt: string;
-
-    resetToken: string;
-    resetTokenExpiresAt: number;
-}
-
-const userSchema = new Schema({
+"use strict";
+exports.__esModule = true;
+var mongoose_1 = require("mongoose");
+var userSchema = new mongoose_1.Schema({
     email: {
         type: String,
         required: true,
@@ -48,5 +34,4 @@ const userSchema = new Schema({
     resetToken: String,
     resetTokenExpiresAt: Date
 });
-
-export default model<UserInterface>('User', userSchema);
+exports["default"] = mongoose_1.model('User', userSchema);

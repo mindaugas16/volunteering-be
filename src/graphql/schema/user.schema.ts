@@ -25,7 +25,8 @@ export const userTypeDefs = `
             postalCode: String!
             termsAndConditions: Boolean!
 
-            name: String
+            organizationName: String
+            sponsorName: String
     }
 
     input UserUpdateInput {
@@ -42,12 +43,13 @@ export const userTypeDefs = `
     }
 
     extend type Query {
-            login(email: String!, password: String!): AuthData!
-            currentUser: User
+        login(email: String!, password: String!): AuthData!
+        currentUser: User
     }
 
     extend type Mutation {
          createUser(userInput: UserInput!, userRole: UserRole!): User
          updateUserInfo(userInput: UserUpdateInput): User
+         changePassword(oldPassword: String!, newPassword: String!, repeatPassword: String!): Boolean
     }
   `;

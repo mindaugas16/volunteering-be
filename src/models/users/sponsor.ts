@@ -1,10 +1,22 @@
 import { Schema } from 'mongoose';
-import User from './user';
+import User, { UserInterface } from './user';
+
+export interface SponsorInterface extends UserInterface {
+    _id: string;
+    sponsorName: string;
+    sponsorLogo: string;
+    sponsorWebsite: string;
+}
 
 const sponsorSchema = new Schema({
-    extra: {
-        type: String
+    sponsorName: {
+        type: String,
+        required: true,
+        unique: true
     },
+    organizationLogo: String,
+    sponsorWebsite: String,
+    extra: String,
     sponsoredEvents: [
         {
             type: Schema.Types.ObjectId,
@@ -13,4 +25,4 @@ const sponsorSchema = new Schema({
     ]
 });
 
-export default User.discriminator('Sponsor', sponsorSchema);
+export default User.discriminator<SponsorInterface>('Sponsor', sponsorSchema);

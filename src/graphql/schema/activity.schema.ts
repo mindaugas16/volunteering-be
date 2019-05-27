@@ -9,7 +9,7 @@ export const activityTypeDefs =
             createdAt: String!
             updatedAt: String!
             event: Event!
-            volunteers: [Volunteer!]
+            participation: [Participation!]
             volunteersNeeded: Int!
         }
 
@@ -31,6 +31,6 @@ export const activityTypeDefs =
             updateActivity(id: ID!, activityInput: ActivityInput!): Activity!
             deleteActivity(id: ID!): Boolean
 
-            registerToActivity(activityId: ID!): Activity
+            registerToActivity(activityId: ID!): Participation
         }
     `;

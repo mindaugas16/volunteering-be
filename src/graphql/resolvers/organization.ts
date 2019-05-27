@@ -4,11 +4,11 @@ import Volunteer from '../../models/users/volunteer';
 import { transformOrganization } from './merge';
 
 export default {
-    organizations: async ({query, location}) => {
+    organizations: async ({query, location, page}) => {
         try {
             let condition = null;
             if (query) {
-                condition = {name: {$regex: query, $options: 'i'}};
+                condition = {organizationName: {$regex: query, $options: 'i'}};
             }
 
             if (location) {
@@ -20,10 +20,21 @@ export default {
                     ]
                 };
             }
-            const organization = await Organization.find(condition);
 
-            return organization.map(event =>
-                transformOrganization(event));
+            if (!page) {
+                page = 1;
+            }
+
+            const perPage = 12;
+            const organization = await Organization.find(condition)
+                .skip((page - 1) * perPage)
+                .limit(perPage)
+                .sort({createdAt: 1});
+
+            return {
+                organizations: organization.map(o => transformOrganization(o)),
+                totalCount: Organization.count(condition)
+            };
         } catch (err) {
             throw err;
         }
@@ -128,9 +139,11 @@ export default {
             //     throw new Error('You can\'t update organization details');
             // }
 
-            organization.name = organizationInput.name;
+            organization.organizationName = organizationInput.organizationName;
             organization.description = organizationInput.description;
             organization.location = organizationInput.location;
+            organization.organizationLogo = organizationInput.organizationLogo;
+            organization.organizationWebsite = organizationInput.organizationWebsite;
 
             const updatedOrganization = await organization.save();
 

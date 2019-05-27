@@ -5,24 +5,33 @@ export const organizationTypeDefs =
             email: String!
             firstName: String!
             lastName: String!
-            name: String!
+            organizationName: String!
             description: String
 
             location: Location
             events: [Event!]
             members: [User!]!
+            organizationLogo: String
+            organizationWebsite: String
+        }
+
+        type OrganizationsResults {
+            totalCount: Int
+            organizations: [Organization!]!
         }
 
         input OrganizationInput {
             creatorId: ID
-            name: String!
+            organizationName: String!
             description: String
             location: LocationInput
+            organizationLogo: String
+            organizationWebsite: String
         }
 
         extend type Query {
             organization(organizationId: ID!): Organization!
-            organizations(query: String, location: String): [Organization!]!
+            organizations(query: String, location: String, page: Int): OrganizationsResults
         }
 
         extend type Mutation {

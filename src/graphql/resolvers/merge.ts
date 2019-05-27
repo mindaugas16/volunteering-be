@@ -1,9 +1,12 @@
 import User from '../../models/users/user';
 import Event from '../../models/event';
 import Activity from '../../models/activity';
+import Participation from '../../models/participation';
 import Organization from '../../models/users/organization';
 import DataLoader from 'dataloader';
 import { dateToString } from 'helpers/date';
+
+const ORGANIZATION_EVENTS_LIMIT = 12;
 
 const eventLoader = new DataLoader(eventIds => events(eventIds));
 
@@ -12,6 +15,8 @@ const activityLoader = new DataLoader(activityIds => activities(activityIds));
 const userLoader = new DataLoader(userIds => users(userIds));
 
 const organizationLoader = new DataLoader(ids => organizations(ids));
+
+const participationLoader = new DataLoader(ids => participation(ids));
 
 export const transformEvent = event =>
     ({
@@ -61,20 +66,10 @@ export const transformActivity = activity =>
         ...activity._doc,
         _id: activity.id,
         date: transformDateRange(activity.date),
-        volunteers: users.bind(this, activity.volunteers),
+        participation: multipleParticipation(activity._doc.participation),
         event: singleEvent.bind(this, activity.event),
         createdAt: dateToString(activity.createdAt),
         updatedAt: dateToString(activity.updatedAt)
-    });
-
-export const transformBooking = booking =>
-    ({
-        ...booking._doc,
-        _id: booking.id,
-        user: user.bind(this, booking._doc.user),
-        event: singleEvent.bind(this, booking._doc.event),
-        createdAt: dateToString(booking._doc.createdAt),
-        updatedAt: dateToString(booking._doc.updatedAt)
     });
 
 export const activities = async activityIds => {
@@ -134,7 +129,8 @@ export const singleEvent = async eventId => {
 
 export const events = async eventIds => {
     try {
-        const foundEvents = await Event.find({_id: {$in: eventIds}});
+        const foundEvents = await Event.find({_id: {$in: eventIds}})
+            .sort({createdAt: 1});
 
         return foundEvents.map(event =>
             transformEvent(event));
@@ -157,6 +153,25 @@ export const organizations = async organizationIds => {
 
         return foundOrganizations.map(item =>
             transformOrganization(item));
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const participation = async id => {
+    try {
+        return await participationLoader.load(id.toString());
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const multipleParticipation = async ids => {
+    try {
+        const foundParticipation = await Participation.find({_id: {$in: ids}});
+
+        return foundParticipation.map(item =>
+            transformParticipation(item));
     } catch (err) {
         throw err;
     }

@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { isEmail } from 'validator';
@@ -6,6 +7,15 @@ import Volunteer from '../../models/users/volunteer';
 import Organization from '../../models/users/organization';
 import Sponsor from '../../models/users/sponsor';
 import { transformUser } from './merge';
+import * as nodemailer from 'nodemailer';
+import sendgridTransport from 'nodemailer-sendgrid-transport';
+import { dateToString } from 'helpers/date';
+
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth: {
+        api_key: process.env.SEND_GRID_API_KEY
+    }
+}));
 
 export default {
     createUser: async ({userInput, userRole}) => {
@@ -25,11 +35,7 @@ export default {
                 default:
                     type = User;
             }
-            const user = await type.findOne({email: userInput.email});
-
-            if (user) {
-                throw new Error('User already exist!');
-            }
+            const user = await User.findOne({email: userInput.email});
 
             const errors = [];
 
@@ -43,6 +49,28 @@ export default {
                 errors.push({
                     termsAndConditions: 'required'
                 });
+            }
+
+            if (user) {
+                errors.push({
+                    email: 'alreadyTaken'
+                });
+            }
+
+            if (role === 'ORGANIZATION') {
+                const organization = await Organization.findOne({organizationName: userInput.organizationName});
+                if (organization) {
+                    errors.push({
+                        organizationName: 'alreadyTaken'
+                    });
+                }
+            } else if (role === 'SPONSOR') {
+                const sponsor = await Sponsor.findOne({sponsorName: userInput.sponsorName});
+                if (sponsor) {
+                    errors.push({
+                        sponsorName: 'alreadyTaken'
+                    });
+                }
             }
 
             if (errors.length) {
@@ -153,10 +181,133 @@ export default {
         try {
             const user = await User.findById(req.userId);
             if (!user) {
-                throw new Error('User not found.');
+                const error = new Error('User not found.') as any;
+                error.code = 404;
+                throw error;
             }
 
             return transformUser(user);
+        } catch (err) {
+            throw err;
+        }
+    },
+    getResetToken: async ({email}, req) => {
+        const buffer = crypto.randomBytes(32);
+
+        try {
+            const errors = [];
+
+            if (!isEmail(email)) {
+                errors.push({
+                    email: 'invalidEmail'
+                });
+            }
+
+            if (errors.length) {
+                const error = new Error('Invalid input') as any;
+                error.data = errors;
+                error.code = 400;
+                throw error;
+            }
+
+            const token = buffer.toString('hex');
+            const user = await User.findOne({email});
+            if (!user) {
+                // Return true then user not found to doesn't let other users to know that this email address are registered to system
+                return true;
+            }
+
+            if (user.resetTokenExpiresAt > Date.now()) {
+                throw new Error('Something went wrong');
+            }
+
+            user.resetToken = token;
+            user.resetTokenExpiresAt = Date.now() + 3600 * 1000;
+
+            user.save();
+            transporter.sendMail({
+                to: user.email,
+                from: 'no-reply@my-volunteering.herokuapp.com',
+                subject: 'Password reset',
+                html: `
+                      <h1>Reset password</h1>
+                      <p>You requested a password reset</p>
+                      <p>Click this <a href="https://my-volunteering.herokuapp.com/auth/reset/${token}">link</a> to set a new password</p>
+                        `
+            });
+
+            return true;
+        } catch (err) {
+            throw err;
+
+        }
+    },
+    resetPassword: async ({token, password}, req) => {
+        try {
+            const user = await User.findOne({resetToken: token, resetTokenExpiresAt: {$gt: Date.now()}});
+            if (!user) {
+                throw new Error('Reset token is invalid');
+            }
+            user.passwordResetAt = dateToString(new Date());
+            user.password = await bcrypt.hash(password, 12);
+            user.resetToken = undefined;
+            user.resetTokenExpiresAt = undefined;
+
+            user.save();
+
+            return true;
+        } catch (err) {
+            throw err;
+        }
+    },
+    changePassword: async ({oldPassword, newPassword, repeatPassword}, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
+        }
+        try {
+            const user = await User.findById(req.userId);
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            const errors = [];
+
+            const isEqual = await bcrypt.compare(oldPassword, user.password);
+
+
+            if (!isEqual) {
+                errors.push({
+                    oldPassword: 'notMatchToCurrent'
+                });
+            } else {
+                if (oldPassword === newPassword) {
+                    errors.push({
+                        newPassword: 'unique'
+                    });
+                }
+
+                if (newPassword !== repeatPassword) {
+                    errors.push({
+                        repeatPassword: 'notMatch'
+                    });
+                }
+            }
+
+            if (errors.length) {
+                const error = new Error('Invalid input') as any;
+                error.data = errors;
+                error.code = 400;
+                throw error;
+            }
+
+            user.passwordResetAt = dateToString(new Date());
+            user.password = await bcrypt.hash(newPassword, 12);
+
+            user.save();
+
+            return true;
         } catch (err) {
             throw err;
         }

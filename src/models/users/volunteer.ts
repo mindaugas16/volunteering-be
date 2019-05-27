@@ -2,16 +2,16 @@ import { Schema } from 'mongoose';
 import User, { UserInterface } from './user';
 import { OrganizationInterface } from 'models/users/organization';
 import { AchievementInterface } from 'models/achievement';
-import { ActivityInterface } from 'models/activity';
+import { ParticipationInterface } from 'models/participation';
 
 export interface VolunteerInterface extends UserInterface {
     organizations: OrganizationInterface[];
     achievements: AchievementInterface[];
-    activities: ActivityInterface[];
+    participation: ParticipationInterface[];
 }
 
 const volunteerSchema = new Schema({
-    participations: [
+    participation: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Participation'
@@ -42,11 +42,6 @@ const volunteerSchema = new Schema({
         {
             type: Schema.Types.ObjectId,
             ref: 'Event'
-        }
-    ],
-    activities: [
-        {
-            type: Schema.Types.Mixed
         }
     ]
 });

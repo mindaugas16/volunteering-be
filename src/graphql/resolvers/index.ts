@@ -5,6 +5,7 @@ import participationResolver from './participation';
 import organizationResolver from './organization';
 import userResolver from './user';
 import volunteerResolver from './volunteer';
+import tagResolver from './tag';
 
 const rootResolvers = {
     ...authResolver,
@@ -13,7 +14,8 @@ const rootResolvers = {
     ...participationResolver,
     ...organizationResolver,
     ...userResolver,
-    ...volunteerResolver
+    ...volunteerResolver,
+    ...tagResolver
 };
 
 export default rootResolvers;
