@@ -172,12 +172,6 @@ export default {
         };
     },
     currentUser: async (args, req) => {
-        if (!req.isAuth) {
-            const error = new Error('Unauthenticated') as any;
-            error.code = 401;
-            throw error;
-        }
-
         try {
             const user = await User.findById(req.userId);
             if (!user) {
