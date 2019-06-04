@@ -14,4 +14,8 @@ export const participationTypeDefs =
         extend type Query {
             participation: [Participation]
         }
+
+        extend type Mutation {
+            deleteParticipation(activityId: ID!): Boolean
+        }
     `;
