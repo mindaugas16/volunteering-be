@@ -305,5 +305,22 @@ export default {
         } catch (err) {
             throw err;
         }
+    },
+    deleteUser: async (args, req) => {
+        if (!req.isAuth) {
+            const error = new Error('Unauthenticated') as any;
+            error.code = 401;
+            throw error;
+        }
+        try {
+            const user = await User.findOneAndRemove({_id: req.userId});
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            return true;
+        } catch (err) {
+            throw err;
+        }
     }
 };
