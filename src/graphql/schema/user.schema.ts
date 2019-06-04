@@ -51,5 +51,6 @@ export const userTypeDefs = `
          createUser(userInput: UserInput!, userRole: UserRole!): User
          updateUserInfo(userInput: UserUpdateInput): User
          changePassword(oldPassword: String!, newPassword: String!, repeatPassword: String!): Boolean
+         deleteUser: Boolean
     }
   `;
