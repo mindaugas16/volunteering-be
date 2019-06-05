@@ -141,7 +141,7 @@ export const events = async eventIds => {
 
 export const organization = async organizationId => {
     try {
-        return await organizationLoader.load(organizationId.toString());
+        return await Organization.findById(organizationId);
     } catch (err) {
         throw err;
     }
