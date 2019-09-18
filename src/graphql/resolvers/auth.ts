@@ -9,7 +9,7 @@ import Sponsor from '../../models/users/sponsor';
 import { transformUser } from './merge';
 import * as nodemailer from 'nodemailer';
 import sendgridTransport from 'nodemailer-sendgrid-transport';
-import { dateToString } from 'helpers/date';
+import { dateToString } from '../../helpers/date';
 
 const transporter = nodemailer.createTransport(sendgridTransport({
     auth: {
@@ -58,7 +58,9 @@ export default {
             }
 
             if (role === 'ORGANIZATION') {
-                const organization = await Organization.findOne({organizationName: userInput.organizationName});
+                const organization = await Organization.findOne(
+                    {organizationName: userInput.organizationName}
+                    );
                 if (organization) {
                     errors.push({
                         organizationName: 'alreadyTaken'
@@ -130,7 +132,7 @@ export default {
     login: async (args, req) => {
         const errors = [];
         if (req.isAuth) {
-            throw new Error('You\'re already logged in!');
+            // throw new Error('You\'re already logged in!');
         }
 
         if (!isEmail(args.email)) {

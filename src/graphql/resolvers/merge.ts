@@ -4,7 +4,7 @@ import Activity from '../../models/activity';
 import Participation from '../../models/participation';
 import Organization from '../../models/users/organization';
 import DataLoader from 'dataloader';
-import { dateToString } from 'helpers/date';
+import { dateToString } from '../../helpers/date';
 
 const ORGANIZATION_EVENTS_LIMIT = 12;
 

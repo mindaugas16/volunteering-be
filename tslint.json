@@ -13,7 +13,10 @@
     "ordered-imports": false,
     "no-unnecessary-callback-wrapper": false,
     "no-invalid-this": false,
-    "no-parameter-reassignment": false
+    "no-parameter-reassignment": false,
+    "no-empty": false,
+    "newline-per-chained-call": false,
+    "no-console": false
   },
   "rulesDirectory": []
 }

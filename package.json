@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node -r tsconfig-paths/register src/app.ts",
-    "start:watch": "nodemon"
+    "start:watch": "nodemon",
+    "test": "mocha -r ts-node/register src/test/**.ts"
   },
   "repository": {
     "type": "git",
@@ -50,5 +51,14 @@
   "engines": {
     "node": "8.12.0",
     "npm": "6.8.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.3",
+    "@types/jsonwebtoken": "^8.3.3",
+    "@types/mocha": "^5.2.7",
+    "@types/sinon": "^7.0.13",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "sinon": "^7.4.2"
   }
 }
